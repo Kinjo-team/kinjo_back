@@ -50,13 +50,17 @@ export async function fetchItineraryByCreatorID (id: number) {
 //Return itineraries by tag 
 export async function fetchItinerariesWithTags (tags: string[]) {
 
-    const itinerariesWithTag = await prisma.itineraries.findMany({
-        where: {
-            itinerary_tags: {
-                hasSome: tags}
-        }
-    });
-    return itinerariesWithTag;
+    if (tags.length > 0 ){
+
+        const itinerariesWithTag = await prisma.itineraries.findMany({
+            where: {
+                itinerary_tags: {
+                    hasSome: tags}
+            }
+        });
+        
+        return itinerariesWithTag;
+    }
 };
 
 
