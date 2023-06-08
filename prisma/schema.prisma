@@ -64,6 +64,7 @@ model Itinerary_locations {
   loc_name         String
   loc_lat          Float
   loc_long         Float
+  loc_coords       Float[]
   loc_address      String?
   loc_duration     Int?
   loc_descr_en     String?
@@ -105,6 +106,7 @@ model Business_listing {
   loc_id        Int?
   biz_lat       Float
   biz_long      Float
+  biz_coords    Float[]
   location      Itinerary_locations? @relation(fields: [loc_id], references: [loc_id])
 }
 
