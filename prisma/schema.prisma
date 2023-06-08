@@ -9,3 +9,121 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  user_id                        Int                   @id @default(autoincrement())
+  firebase_uuid                  Int? //To be made non-nullable 
+  username                       String                @unique
+  first_name                     String?
+  last_name                      String?
+  user_email                     String                @unique
+  access_token                   String?
+  affiliation                    String?
+  badges                         Badge[]
+  karma                          Int?
+  blueBadge                      Boolean?
+  Itineraries                    Itineraries[]
+  Itinerary_rating               Itinerary_rating[]
+  Itinerary_locations            Itinerary_locations[]
+  Location_rating                Location_rating[]
+  // Itinerary_sharing               Itinerary_sharing[]
+  // Itinerary_sharing               Itinerary_sharing?    @relation(fields: [itinerary_sharingSharer_user_id], references: [sharer_user_id])
+  // itinerary_sharingSharer_user_id Int?
+  // Location_sharing                Location_sharing[]
+  // Location_sharing                Location_sharing?     @relation(fields: [location_sharingSharer_user_id], references: [sharer_user_id])
+  location_sharingSharer_user_id Int?
+}
+
+model Itineraries {
+  itinerary_id       Int                @id @default(autoincrement())
+  creator            Users              @relation(fields: [creator_id], references: [user_id])
+  creator_id         Int
+  itinerary_name     String             @unique
+  itinerary_tags     String[]
+  location_ids       Int[]
+  itinerary_duration Int?
+  ratings            Itinerary_rating[]
+  // Itinerary_sharing  Itinerary_sharing[]
+}
+
+model Itinerary_rating {
+  itinerary_id            Int          @id
+  rating                  Int?
+  user                    Users        @relation(fields: [user_id], references: [user_id])
+  user_id                 Int
+  iterinary_comments_en   String?
+  itinerary_comments_jp   String?
+  Itineraries             Itineraries? @relation(fields: [itinerariesItinerary_id], references: [itinerary_id])
+  itinerariesItinerary_id Int?
+}
+
+model Itinerary_locations {
+  loc_id           Int                @id @default(autoincrement())
+  creator          Users              @relation(fields: [creator_id], references: [user_id])
+  creator_id       Int
+  loc_name         String
+  loc_lat          Float
+  loc_long         Float
+  loc_coords       Float[]
+  loc_address      String?
+  loc_duration     Int?
+  loc_descr_en     String?
+  loc_descr_jp     String?
+  loc_imgUrls      String[]
+  loc_tags         String[]
+  ratings          Location_rating[]
+  Business_listing Business_listing[]
+  // Location_sharing Location_sharing[]
+}
+
+model Location_rating {
+  loc_id                    Int                  @id
+  user                      Users                @relation(fields: [user_id], references: [user_id])
+  user_id                   Int
+  loc_rating                Int?
+  loc_comments_en           String?
+  loc_comments_jp           String?
+  Itinerary_locations       Itinerary_locations? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
+  itinerary_locationsLoc_id Int?
+}
+
+model Badge {
+  badge_id   Int     @id @default(autoincrement())
+  badge_name String  @unique
+  badge_desc String
+  badge_img  String
+  users      Users[]
+}
+
+model Business_listing {
+  biz_id        Int                  @id @default(autoincrement())
+  biz_name      String
+  biz_email     String
+  biz_address   String
+  biz_poc_first String
+  biz_poc_last  String
+  biz_desc      String
+  loc_id        Int?
+  biz_lat       Float
+  biz_long      Float
+  biz_coords    Float[]
+  location      Itinerary_locations? @relation(fields: [loc_id], references: [loc_id])
+}
+
+// model Itinerary_sharing {
+//   sharer_user_id  Int         @id
+//   itinerary_id    Int
+//   shared_with_ids Int[]
+//   sharer          Users       @relation(fields: [sharer_user_id], references: [user_id])
+//   itinerary       Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+//   shared_with     Users[]     @relation("SharedWith")
+// }
+
+// model Location_sharing {
+//   sharer_user_id  Int                 @id
+//   location_id     Int
+//   shared_with_ids Int[]
+//   sharer          Users               @relation(fields: [sharer_user_id], references: [user_id])
+//   location        Itinerary_locations @relation(fields: [location_id], references: [loc_id])
+//   shared_with     Users[]             @relation("SharedWith")
+// }
