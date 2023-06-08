@@ -15,30 +15,7 @@ export async function fetchAllLocations () {
     return allLocations;
 }
 
-//Return itinerary locations by Itinerary Name
-export async function fetchLocationByItineraryName () {
 
-    const itineraryLocationsByName = await prisma.itinerary_locations.findFirst({
-        select: {
-
-        }
-    });
-
-    return itineraryLocationsByName;
-}
-
-
-//Return itinerary locations by Itinerary ID
-export async function fetchLocationsByItineraryId () {
-
-    const itineraryLocationsByItineraryID = await prisma.itinerary_locations.findFirst({
-        select: {
-
-        }
-    });
-
-    return itineraryLocationsByItineraryID;
-}
 
 
 //Return itinerary locations by Tags
@@ -54,27 +31,27 @@ export async function fetchLocationsByTags () {
 }
 
 //Return itinerary locations with duration greater than
-export async function fetchLocationsWithDurationGreaterThan (dur: Number) {
+export async function fetchLocationsWithDurationGreaterThan (dur: number) {
 
-    const itineraryLocationsByTags = await prisma.itinerary_locations.findMany({
+    const itineraryLocationsByDuration = await prisma.itinerary_locations.findMany({
         select: {
 
         }
     });
 
-    return itineraryLocationsByTags;
+    return itineraryLocationsByDuration;
 }
 
 //Return itinerary locations with duration less than
-export async function fetchLocationsWithDurationLessThan (dur: Number) {
+export async function fetchLocationsWithDurationLessThan (dur: number) {
 
-    const itineraryLocationsByTags = await prisma.itinerary_locations.findMany({
+    const itineraryLocationsByDuration = await prisma.itinerary_locations.findMany({
         select: {
 
         }
     });
 
-    return itineraryLocationsByTags;
+    return itineraryLocationsByDuration;
 }
 
 
