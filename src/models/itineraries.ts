@@ -138,7 +138,7 @@ export async function fetchLocationsByItineraryId (itineraryID: number) {
 //   return newItinerary.itinerary_name;
 //   }
 
-const createItinerary = async (itinerary: Itineraries) => {
+export const createItinerary = async (itinerary: Itineraries) => {
     const newItinerary = await prisma.itineraries.create({
       data: {
         creator_id: itinerary.creator_id,
@@ -177,11 +177,11 @@ export async function modifyItinerary(itinerary: Itineraries) {
 
 //DELETE
 //Delete itinerary by name
-export async function deleteItineraryByName(itinerary: Itineraries) {
-    const { itinerary_name } = itinerary;
+export async function deleteItineraryByName(itineraryName: string) {
+    // const { itinerary_name } = itinerary;
     const deleteItinerary = await prisma.itineraries.delete({
         where: {
-            itinerary_name: itinerary_name,
+            itinerary_name: itineraryName,
         }
     });
 
@@ -189,11 +189,11 @@ export async function deleteItineraryByName(itinerary: Itineraries) {
 }
 
 //Delete itinerary by ID
-export async function deleteItineraryByItineraryID(itinerary: Itineraries) {
-    const { itinerary_id } = itinerary;
+export async function deleteItineraryByItineraryID(itineraryID: number) {
+    // const { itinerary_id } = itinerary;
     const deleteItinerary = await prisma.itineraries.delete({
         where: {
-            itinerary_id: itinerary_id,
+            itinerary_id: itineraryID,
         }
     });
 
@@ -201,11 +201,11 @@ export async function deleteItineraryByItineraryID(itinerary: Itineraries) {
 }
 
 //Delete itinerary by Creator ID
-export async function deleteItineraryByCreatorID(itinerary: Itineraries) {
-    const { creator_id } = itinerary;
+export async function deleteItineraryByCreatorID(creatorID: number) {
+    // const { creator_id } = itinerary;
     const deleteItinerary = await prisma.itineraries.deleteMany({
         where: {
-            creator_id: creator_id,
+            creator_id: creatorID,
         }
     });
 
