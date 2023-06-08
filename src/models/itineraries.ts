@@ -58,7 +58,7 @@ export async function fetchItinerariesWithTags (tags: string[]) {
                     hasSome: tags}
             }
         });
-        
+
         return itinerariesWithTag;
     }
 };
@@ -120,23 +120,37 @@ export async function fetchLocationsByItineraryId (itineraryID: number) {
 
 //POST
 //Add new itinerary
-export async function createItinerary(itinerary: Itineraries) {
+// export async function createItinerary(itinerary: Itineraries) {
 
-    const { creator_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
+//     const { creator_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
 
-    const newItinerary = await prisma.itineraries.create ({
-        data: {
-            creator_id: creator_id,
-            itinerary_name: itinerary_name,
-            itinerary_tags: itinerary_tags,
-            location_ids: location_ids,
-            itinerary_duration: itinerary_duration
+//     const newItinerary = await prisma.itineraries.create ({
+//         data: {
+//             creator_id: creator_id,
+//             itinerary_name: itinerary_name,
+//             itinerary_tags: itinerary_tags,
+//             location_ids: location_ids,
+//             itinerary_duration: itinerary_duration
 
-        }
-    })
+//         }
+//     })
 
-  return newItinerary.itinerary_name;
-  }
+//   return newItinerary.itinerary_name;
+//   }
+
+const createItinerary = async (itinerary: Itineraries) => {
+    const newItinerary = await prisma.itineraries.create({
+      data: {
+        creator_id: itinerary.creator_id,
+        itinerary_name: itinerary.itinerary_name,
+        itinerary_tags: itinerary.itinerary_tags,
+        location_ids: itinerary.location_ids,
+        itinerary_duration: itinerary.itinerary_duration,
+      },
+    });
+  
+    return newItinerary;
+  };
 
 
 //PATCH
@@ -150,15 +164,16 @@ export async function modifyItinerary(itinerary: Itineraries) {
           itinerary_id: itinerary_id
         },
         data: {
-        itinerary_name: itinerary_name,
-        itinerary_tags: itinerary_tags,
-        location_ids: location_ids,
-        itinerary_duration: itinerary_duration
-    } 
+            creator_id: itinerary.creator_id,
+            itinerary_name: itinerary.itinerary_name,
+            itinerary_tags: itinerary.itinerary_tags,
+            location_ids: itinerary.location_ids,
+            itinerary_duration: itinerary.itinerary_duration,
+          },
     })
-    return modifiedItinerary.itinerary_name
-}
 
+    return modifiedItinerary;
+}
 
 //DELETE
 //Delete itinerary by name
