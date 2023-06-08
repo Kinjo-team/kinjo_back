@@ -157,7 +157,7 @@ export const createItinerary = async (itinerary: Itineraries) => {
 //Modify existing itinerary
 export async function modifyItinerary(itinerary: Itineraries) {
 
-    const { itinerary_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
+    const { itinerary_id } = itinerary;
 
     const modifiedItinerary = await prisma.itineraries.update({
         where: {
