@@ -12,6 +12,7 @@ datasource db {
 
 model Users {
   user_id                        Int                   @id @default(autoincrement())
+  firebase_uuid                  Int? //To be made non-nullable 
   username                       String                @unique
   first_name                     String
   last_name                      String
@@ -48,7 +49,7 @@ model Itineraries {
 
 model Itinerary_rating {
   itinerary_id            Int          @id
-  rating                  Int
+  rating                  Int?
   user                    Users        @relation(fields: [user_id], references: [user_id])
   user_id                 Int
   iterinary_comments_en   String?
@@ -79,7 +80,7 @@ model Location_rating {
   loc_id                    Int                  @id
   user                      Users                @relation(fields: [user_id], references: [user_id])
   user_id                   Int
-  loc_rating                Int
+  loc_rating                Int?
   loc_comments_en           String?
   loc_comments_jp           String?
   Itinerary_locations       Itinerary_locations? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
