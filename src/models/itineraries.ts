@@ -47,13 +47,26 @@ export async function fetchItineraryByCreatorID (id: number) {
     return itineraryByCreatorID;
 }
 
+//Return itineraries by tag 
+export async function fetchItinerariesWithTags (tags: string[]) {
+
+    const itinerariesWithTag = await prisma.itineraries.findMany({
+        where: {
+            itinerary_tags: {
+                hasSome: tags}
+        }
+    });
+    return itinerariesWithTag;
+};
+
+
 //Return itineraries with duration greater than
-export async function fetchItinerariesWithDurationGreaterThan (dur: number) {
+export async function fetchItinerariesWithDurationGreaterThan (duration: number) {
 
     const itinerariesWhereDuration = await prisma.itineraries.findMany({
         where: {
             itinerary_duration: {
-                gte: dur
+                gte: duration
             }
         }
     });
@@ -62,12 +75,12 @@ export async function fetchItinerariesWithDurationGreaterThan (dur: number) {
 }
 
 //Return itineraries with duration less than
-export async function fetchItinerariesWithDurationLessThan (dur: number) {
+export async function fetchItinerariesWithDurationLessThan (duration: number) {
 
     const itinerariesWhereDuration = await prisma.itineraries.findMany({
         where: {
             itinerary_duration: {
-                lte: dur
+                lte: duration
             }
         }
     });
@@ -123,6 +136,7 @@ export async function createItinerary(itinerary: Itineraries) {
 
 
 //PATCH
+//Modify existing itinerary
 export async function modifyItinerary(itinerary: Itineraries) {
 
     const { itinerary_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
