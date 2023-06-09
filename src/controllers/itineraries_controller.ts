@@ -89,82 +89,82 @@ export const getItinerariesWithDurationGreaterThan = async (req: Request, res: R
 };
 
 export const getItinerariesWithDurationLessThan = async (req: Request, res: Response) => {
-    const { duration } = req.body;
-    try {
-      const itineraries = await fetchItinerariesWithDurationLessThan(duration);
-      res.status(200).json(itineraries);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching itineraries.' });
-    }
-  };
+  const { duration } = req.body;
+  try {
+    const itineraries = await fetchItinerariesWithDurationLessThan(duration);
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while fetching itineraries.' });
+  }
+};
   
-  export const getLocationsByItineraryName = async (req: Request, res: Response) => {
-    const { itineraryName } = req.params;
-    try {
-      const locations = await fetchLocationsByItineraryName(itineraryName);
-      res.status(200).json(locations);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching the locations.' });
-    }
-  };
-  
-  export const getLocationsByItineraryId = async (req: Request, res: Response) => {
-    const { itineraryID } = req.params;
-    try {
-      const locations = await fetchLocationsByItineraryId(Number(itineraryID));
-      res.status(200).json(locations);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while fetching the locations.' });
-    }
-  };
-  
-  export const addItinerary = async (req: Request, res: Response) => {
-    const itinerary: Itineraries = req.body;
-    try {
-      const newItinerary = await createItinerary(itinerary);
-      res.status(201).json(newItinerary);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while creating the itinerary.' });
-    }
-  };
-  
-  export const updateItinerary = async (req: Request, res: Response) => {
-    const itinerary: Itineraries = req.body;
-    try {
-      const modifiedItinerary = await modifyItinerary(itinerary);
-      res.status(200).json(modifiedItinerary);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while modifying the itinerary.' });
-    }
-  };
-  
-  export const delItineraryByName = async (req: Request, res: Response) => {
-    const { itineraryName } = req.params;
-    try {
-      const deletedItineraryName = await deleteItineraryByName(itineraryName);
-      res.status(200).json(deletedItineraryName);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while deleting the itinerary.' });
-    }
-  };
-  
-  export const delItineraryByItineraryID = async (req: Request, res: Response) => {
-    const { itineraryID } = req.params;
-    try {
-      const deletedItineraryID = await deleteItineraryByItineraryID(Number(itineraryID));
-      res.status(200).json(deletedItineraryID);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while deleting the itinerary.' });
-    }
-  };
-  
-  export const delItineraryByCreatorID = async (req: Request, res: Response) => {
-    const { creatorID } = req.params;
-    try {
-      const deletedItinerariesCount = await deleteItineraryByCreatorID(Number(creatorID));
-      res.status(200).json(deletedItinerariesCount);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while deleting the itineraries.' });
-    }
-  };
+export const getLocationsByItineraryName = async (req: Request, res: Response) => {
+  const { itineraryName } = req.params;
+  try {
+    const locations = await fetchLocationsByItineraryName(itineraryName);
+    res.status(200).json(locations);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while fetching the locations.' });
+  }
+};
+
+export const getLocationsByItineraryId = async (req: Request, res: Response) => {
+  const { itineraryID } = req.params;
+  try {
+    const locations = await fetchLocationsByItineraryId(Number(itineraryID));
+    res.status(200).json(locations);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while fetching the locations.' });
+  }
+};
+
+export const addItinerary = async (req: Request, res: Response) => {
+  const itinerary: Itineraries = req.body;
+  try {
+    const newItinerary = await createItinerary(itinerary);
+    res.status(201).json(newItinerary);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while creating the itinerary.' });
+  }
+};
+
+export const updateItinerary = async (req: Request, res: Response) => {
+  const itinerary: Itineraries = req.body;
+  try {
+    const modifiedItinerary = await modifyItinerary(itinerary);
+    res.status(200).json(modifiedItinerary);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while modifying the itinerary.' });
+  }
+};
+
+export const delItineraryByName = async (req: Request, res: Response) => {
+  const { itineraryName } = req.params;
+  try {
+    const deletedItineraryName = await deleteItineraryByName(itineraryName);
+    res.status(200).json(deletedItineraryName);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting the itinerary.' });
+  }
+};
+
+export const delItineraryByItineraryID = async (req: Request, res: Response) => {
+  const { itineraryID } = req.params;
+  try {
+    const deletedItineraryID = await deleteItineraryByItineraryID(Number(itineraryID));
+    res.status(200).json(deletedItineraryID);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting the itinerary.' });
+  }
+};
+
+export const delItineraryByCreatorID = async (req: Request, res: Response) => {
+  const { creatorID } = req.params;
+  try {
+    const deletedItinerariesCount = await deleteItineraryByCreatorID(Number(creatorID));
+    res.status(200).json(deletedItinerariesCount);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while deleting the itineraries.' });
+  }
+};
 

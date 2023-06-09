@@ -36,6 +36,8 @@ import {
     deleteLocsByCreatorID,
   } from './controllers/locations_controller';
 
+import { createNewUser, deleteExistingUser } from './controllers/users_controller';
+
 dotenv.config();
 
 // const express = require('express');
@@ -84,6 +86,10 @@ app.post('/locations', addLocation);
 app.patch('/locations', updateLocation);
 app.delete('/locations/id/:id', deleteLocByLocID);
 app.delete('/locations/creator/:id', deleteLocsByCreatorID);
+
+// users_controller.ts
+app.post('/users/', createNewUser);
+app.delete('/users/:uid', deleteExistingUser)
 
 //Listen
 app.listen(PORT, () => {
