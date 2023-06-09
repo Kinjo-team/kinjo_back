@@ -1,7 +1,6 @@
 import { Itineraries } from '@prisma/client';
 import { prisma } from '../server';
 
-
 //GET
 //Returns all stored itineraries
 export async function fetchAllItineraries () {
@@ -20,7 +19,6 @@ export async function fetchItineraryByName (name: string) {
 
     return itineraryByName;
 }
-
 
 //Return itinerary by Itinerary ID
 export async function fetchItineraryByID (id: number) {
@@ -103,7 +101,6 @@ export async function fetchLocationsByItineraryName (itineraryName: string) {
 
     return itineraryLocationsByName?.location_ids;
 }
-
 
 //Return itinerary locations by Itinerary ID
 export async function fetchLocationsByItineraryId (itineraryID: number) {
