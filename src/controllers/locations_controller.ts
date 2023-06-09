@@ -16,7 +16,6 @@ import {
 import { validationResult } from 'express-validator';
 
 
-
 export const getAllLocations = async (_req: Request, res: Response) => {
 
   try {
