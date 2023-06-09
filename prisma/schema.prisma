@@ -12,7 +12,7 @@ datasource db {
 
 model Users {
   user_id                        Int                   @id @default(autoincrement())
-  firebase_uuid                  Int? //To be made non-nullable 
+  firebase_uuid                  Int                   @unique
   username                       String                @unique
   first_name                     String?
   last_name                      String?

@@ -128,11 +128,18 @@ export const getLocationsWithDurationLessThan = async (req: Request, res: Respon
     const locations = await fetchLocationsWithDurationLessThan(Number(duration));
     res.status(200).json(locations);
   } catch (error) {
-    res.status(500).json({ error: 'An error occurred while fetching the locations.' });
-    }
+  res.status(500).json({ error: 'An error occurred while fetching the locations.' });
+  }
 };
 
 export const addLocation = async (req: Request, res: Response) => {
+  const location: Itinerary_locations = req.body;
+  try {
+    const newLocation = await createItineraryLocation(location);
+    res.status(201).json(newLocation);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while creating the location.' });
+};
 
   const location: Itinerary_locations = req.body;
   try {
@@ -144,13 +151,13 @@ export const addLocation = async (req: Request, res: Response) => {
 };
   
 export const updateLocation = async (req: Request, res: Response) => {
-    const location: Itinerary_locations = req.body;
-    try {
-        const modifiedLocation = await updateItineraryLocation(location);
-        res.status(200).json(modifiedLocation);
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while modifying the location.' });
-    }
+  const location: Itinerary_locations = req.body;
+  try {
+      const modifiedLocation = await updateItineraryLocation(location);
+      res.status(200).json(modifiedLocation);
+  } catch (error) {
+      res.status(500).json({ error: 'An error occurred while modifying the location.' });
+  }
 };
 
 export const deleteLocByLocID = async (req: Request, res: Response) => {

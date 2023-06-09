@@ -41,6 +41,8 @@ import {
     validateDuration, 
     } from './validation/validator_params';
 
+import { createNewUser, deleteExistingUser } from './controllers/users_controller';
+
 dotenv.config();
 
 // const express = require('express');
@@ -89,6 +91,11 @@ app.post('/locations', addLocation);
 app.patch('/locations', updateLocation);
 app.delete('/locations/id/:id', validateID, deleteLocByLocID);
 app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
+
+// users_controller.ts
+app.post('/users/', createNewUser);
+app.delete('/users/:uid', deleteExistingUser)
+
 
 //Listen
 app.listen(PORT, () => {
