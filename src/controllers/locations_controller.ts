@@ -13,8 +13,11 @@ import {
   deleteLocationsByItineraryID,
   deleteLocationsByCreatorID,
 } from '../models/locations';
+import { validationResult } from 'express-validator';
+
 
 export const getAllLocations = async (_req: Request, res: Response) => {
+
   try {
     const locations = await fetchAllLocations();
     res.status(200).json(locations);
@@ -24,6 +27,13 @@ export const getAllLocations = async (_req: Request, res: Response) => {
 };
 
 export const getLocationByLocationID = async (req: Request, res: Response) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   try {
     const location = await fetchLocationByLocationID(Number(id));
@@ -38,6 +48,13 @@ export const getLocationByLocationID = async (req: Request, res: Response) => {
 };
 
 export const getLocationsByCreatorID = async (req: Request, res: Response) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   try {
     const locations = await fetchLocationsByCreatorID(Number(id));
@@ -48,6 +65,13 @@ export const getLocationsByCreatorID = async (req: Request, res: Response) => {
 };
 
 export const getLocationsByLocationName = async (req: Request, res: Response) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { name } = req.params;
   try {
     const locations = await fetchLocationsByLocationName(name);
@@ -58,6 +82,13 @@ export const getLocationsByLocationName = async (req: Request, res: Response) =>
 };
 
 export const getLocationsByTags = async (req: Request, res: Response) => {
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { tags } = req.body;
   try {
     const locations = await fetchLocationsByTags(tags);
@@ -68,9 +99,16 @@ export const getLocationsByTags = async (req: Request, res: Response) => {
 };
 
 export const getLocationsWithDurationGreaterThan = async (req: Request, res: Response) => {
-  const { duration } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { duration } = req.params;
   try {
-    const locations = await fetchLocationsWithDurationGreaterThan(duration);
+    const locations = await fetchLocationsWithDurationGreaterThan(Number(duration));
     res.status(200).json(locations);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while fetching the locations.' });
@@ -78,9 +116,16 @@ export const getLocationsWithDurationGreaterThan = async (req: Request, res: Res
 };
 
 export const getLocationsWithDurationLessThan = async (req: Request, res: Response) => {
-  const { duration } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { duration } = req.params;
   try {
-    const locations = await fetchLocationsWithDurationLessThan(duration);
+    const locations = await fetchLocationsWithDurationLessThan(Number(duration));
     res.status(200).json(locations);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while fetching the locations.' });
@@ -88,13 +133,14 @@ export const getLocationsWithDurationLessThan = async (req: Request, res: Respon
 };
 
 export const addLocation = async (req: Request, res: Response) => {
-    const location: Itinerary_locations = req.body;
-    try {
-      const newLocation = await createItineraryLocation(location);
-      res.status(201).json(newLocation);
-    } catch (error) {
-      res.status(500).json({ error: 'An error occurred while creating the location.' });
-    }
+
+  const location: Itinerary_locations = req.body;
+  try {
+    const newLocation = await createItineraryLocation(location);
+    res.status(201).json(newLocation);
+  } catch (error) {
+    res.status(500).json({ error: 'An error occurred while creating the location.' });
+  }
 };
   
 export const updateLocation = async (req: Request, res: Response) => {
@@ -108,21 +154,35 @@ export const updateLocation = async (req: Request, res: Response) => {
 };
 
 export const deleteLocByLocID = async (req: Request, res: Response) => {
-    const { locationID } = req.params;
-    try {
-        const deletedLocation = await deleteLocationsByItineraryID(Number(locationID));
-        res.status(200).json(deletedLocation);
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while deleting the location.' });
-    }
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { locationID } = req.params;
+  try {
+      const deletedLocation = await deleteLocationsByItineraryID(Number(locationID));
+      res.status(200).json(deletedLocation);
+  } catch (error) {
+      res.status(500).json({ error: 'An error occurred while deleting the location.' });
+  }
 };
 
 export const deleteLocsByCreatorID = async (req: Request, res: Response) => {
-    const { creatorID } = req.params;
-    try {
-        const deletedLocationsCount = await deleteLocationsByCreatorID(Number(creatorID));
-        res.status(200).json(deletedLocationsCount);
-    } catch (error) {
-        res.status(500).json({ error: 'An error occurred while deleting the locations.' });
-}
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Validation errors occurred
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { creatorID } = req.params;
+  try {
+      const deletedLocationsCount = await deleteLocationsByCreatorID(Number(creatorID));
+      res.status(200).json(deletedLocationsCount);
+  } catch (error) {
+      res.status(500).json({ error: 'An error occurred while deleting the locations.' });
+  }
 };
