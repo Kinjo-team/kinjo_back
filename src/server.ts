@@ -96,6 +96,7 @@ app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
 app.post('/users/', createNewUser);
 app.delete('/users/:uid', deleteExistingUser)
 
+
 //Listen
 app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`);
