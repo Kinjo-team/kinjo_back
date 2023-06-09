@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors'; 
 import { PrismaClient } from '@prisma/client';
-import { query, validationResult } from 'express-validator';
 
 import {
     getAllItineraries,
@@ -20,7 +19,7 @@ import {
     delItineraryByName,
     delItineraryByItineraryID,
     delItineraryByCreatorID,
-  } from './controllers/itineraries_controller';
+    } from './controllers/itineraries_controller';
   
   import {
     getAllLocations,
@@ -34,7 +33,13 @@ import {
     updateLocation,
     deleteLocByLocID,
     deleteLocsByCreatorID,
-  } from './controllers/locations_controller';
+    } from './controllers/locations_controller';
+
+  import { 
+    validateName, 
+    validateID, 
+    validateDuration, 
+    } from './validation/validator_params';
 
 dotenv.config();
 
@@ -60,30 +65,30 @@ app.get('/', (req: Request, res: Response) => {
 
 // itineraries_controller.ts
 app.get('/itineraries', getAllItineraries);
-app.get('/itineraries/name/:name', getItineraryByName);
-app.get('/itineraries/id/:id', getItineraryByID);
-app.get('/itineraries/creator/:id', getItineraryByCreatorID);
+app.get('/itineraries/name/:name', validateName, getItineraryByName);
+app.get('/itineraries/id/:id', validateID, getItineraryByID);
+app.get('/itineraries/creator/:id', validateID, getItineraryByCreatorID);
 app.get('/itineraries/tags', getItinerariesWithTags);
-app.get('/itineraries/duration/greater/:duration', getItinerariesWithDurationGreaterThan); //FIX
-app.get('/itineraries/duration/less/:duration', getItinerariesWithDurationLessThan); //FIX
+app.get('/itineraries/duration/greater/:duration', validateDuration, getItinerariesWithDurationGreaterThan); //FIX
+app.get('/itineraries/duration/less/:duration', validateDuration, getItinerariesWithDurationLessThan); //FIX
 app.post('/itineraries', addItinerary);
 app.patch('/itineraries', updateItinerary);
-app.delete('/itineraries/name/:name', delItineraryByName);
-app.delete('/itineraries/id/:id', delItineraryByItineraryID);
-app.delete('/itineraries/creator/:id', delItineraryByCreatorID);
+app.delete('/itineraries/name/:name', validateName, delItineraryByName);
+app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
+app.delete('/itineraries/creator/:id', validateID, delItineraryByCreatorID);
 
 // locations_controller.ts
 app.get('/locations', getAllLocations);
-app.get('/locations/id/:id', getLocationsByItineraryId);
-app.get('/locations/creator/:id', getLocationsByCreatorID);
-app.get('/locations/name/:name', getLocationsByLocationName);
+app.get('/locations/id/:id', validateID, getLocationsByItineraryId);
+app.get('/locations/creator/:id', validateID, getLocationsByCreatorID);
+app.get('/locations/name/:name', validateName, getLocationsByLocationName);
 app.get('/locations/tags', getLocationsByTags);
-app.get('/locations/duration/greater/:duration', getLocationsWithDurationGreaterThan);
-app.get('/locations/duration/less/:duration', getLocationsWithDurationLessThan);
+app.get('/locations/duration/greater/:duration', validateDuration, getLocationsWithDurationGreaterThan);
+app.get('/locations/duration/less/:duration', validateDuration, getLocationsWithDurationLessThan);
 app.post('/locations', addLocation);
 app.patch('/locations', updateLocation);
-app.delete('/locations/id/:id', deleteLocByLocID);
-app.delete('/locations/creator/:id', deleteLocsByCreatorID);
+app.delete('/locations/id/:id', validateID, deleteLocByLocID);
+app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
 
 //Listen
 app.listen(PORT, () => {
