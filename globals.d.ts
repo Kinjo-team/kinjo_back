@@ -8,7 +8,7 @@ export interface Location {
 
 
 export interface FirebaseUser {
-  uid: number,
+  uid: string,
   username: string,
   user_email: string,
 }

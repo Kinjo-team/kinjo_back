@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import cors from 'cors'; 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../node_modules/.prisma/client'
 
 import {
     getAllItineraries,
@@ -41,7 +41,7 @@ import {
     validateDuration, 
     } from './validation/validator_params';
 
-import { createNewUser, deleteExistingUser } from './controllers/users_controller';
+import { createNewUser, deleteExistingUser, getUserByUUID } from './controllers/users_controller';
 
 dotenv.config();
 
@@ -93,8 +93,9 @@ app.delete('/locations/id/:id', validateID, deleteLocByLocID);
 app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
 
 // users_controller.ts
-app.post('/users/', createNewUser);
+app.post('/users', createNewUser);
 app.delete('/users/:uid', deleteExistingUser)
+app.get('/users/:uid', getUserByUUID);
 
 
 //Listen

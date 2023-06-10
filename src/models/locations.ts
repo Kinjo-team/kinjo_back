@@ -1,4 +1,4 @@
-import { Itinerary_locations } from '@prisma/client';
+import { itinerary_locations } from '@prisma/client';
 import { prisma } from '../server';
 
 
@@ -89,7 +89,7 @@ export async function fetchLocationsWithDurationLessThan (duration: number) {
 //POST
 
 // Prisma.create function for Itinerary_locations table
-export const createItineraryLocation = async (location: Itinerary_locations) => {
+export const createItineraryLocation = async (location: itinerary_locations) => {
 
     const itineraryLocation = await prisma.itinerary_locations.create({
       data: {
@@ -111,7 +111,7 @@ export const createItineraryLocation = async (location: Itinerary_locations) => 
   };
   
   //PATCH
-  export const updateItineraryLocation = async (location: Itinerary_locations) => {
+  export const updateItineraryLocation = async (location: itinerary_locations) => {
     const itineraryLocation = await prisma.itinerary_locations.update({
       where: {
         loc_id: location.loc_id,

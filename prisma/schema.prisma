@@ -1,8 +1,10 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+
 generator client {
   provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -10,22 +12,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model users {
   user_id                        Int                   @id @default(autoincrement())
-  firebase_uuid                  Int                   @unique
+  firebase_uuid                  String                @unique
   username                       String                @unique
   first_name                     String?
   last_name                      String?
   user_email                     String                @unique
   access_token                   String?
   affiliation                    String?
-  badges                         Badge[]
+  badges                         badge[]
   karma                          Int?
-  blueBadge                      Boolean?
-  Itineraries                    Itineraries[]
-  Itinerary_rating               Itinerary_rating[]
-  Itinerary_locations            Itinerary_locations[]
-  Location_rating                Location_rating[]
+  blue_badge                     Boolean?
+  itineraries                    itineraries[]
+  itinerary_rating               itinerary_rating[]
+  itinerary_locations            itinerary_locations[]
+  location_rating                location_rating[]
   // Itinerary_sharing               Itinerary_sharing[]
   // Itinerary_sharing               Itinerary_sharing?    @relation(fields: [itinerary_sharingSharer_user_id], references: [sharer_user_id])
   // itinerary_sharingSharer_user_id Int?
@@ -34,32 +36,32 @@ model Users {
   location_sharingSharer_user_id Int?
 }
 
-model Itineraries {
+model itineraries {
   itinerary_id       Int                @id @default(autoincrement())
-  creator            Users              @relation(fields: [creator_id], references: [user_id])
+  creator            users              @relation(fields: [creator_id], references: [user_id])
   creator_id         Int
   itinerary_name     String             @unique
   itinerary_tags     String[]
   location_ids       Int[]
   itinerary_duration Int?
-  ratings            Itinerary_rating[]
+  ratings            itinerary_rating[]
   // Itinerary_sharing  Itinerary_sharing[]
 }
 
-model Itinerary_rating {
+model itinerary_rating {
   itinerary_id            Int          @id
   rating                  Int?
-  user                    Users        @relation(fields: [user_id], references: [user_id])
+  user                    users        @relation(fields: [user_id], references: [user_id])
   user_id                 Int
   iterinary_comments_en   String?
   itinerary_comments_jp   String?
-  Itineraries             Itineraries? @relation(fields: [itinerariesItinerary_id], references: [itinerary_id])
+  itineraries             itineraries? @relation(fields: [itinerariesItinerary_id], references: [itinerary_id])
   itinerariesItinerary_id Int?
 }
 
-model Itinerary_locations {
+model itinerary_locations {
   loc_id           Int                @id @default(autoincrement())
-  creator          Users              @relation(fields: [creator_id], references: [user_id])
+  creator          users              @relation(fields: [creator_id], references: [user_id])
   creator_id       Int
   loc_name         String
   loc_lat          Float
@@ -71,31 +73,31 @@ model Itinerary_locations {
   loc_descr_jp     String?
   loc_imgUrls      String[]
   loc_tags         String[]
-  ratings          Location_rating[]
-  Business_listing Business_listing[]
+  ratings          location_rating[]
+  business_listing business_listing[]
   // Location_sharing Location_sharing[]
 }
 
-model Location_rating {
+model location_rating {
   loc_id                    Int                  @id
-  user                      Users                @relation(fields: [user_id], references: [user_id])
+  user                      users                @relation(fields: [user_id], references: [user_id])
   user_id                   Int
   loc_rating                Int?
   loc_comments_en           String?
   loc_comments_jp           String?
-  Itinerary_locations       Itinerary_locations? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
+  itinerary_locations       itinerary_locations? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
   itinerary_locationsLoc_id Int?
 }
 
-model Badge {
+model badge {
   badge_id   Int     @id @default(autoincrement())
   badge_name String  @unique
   badge_desc String
   badge_img  String
-  users      Users[]
+  users      users[]
 }
 
-model Business_listing {
+model business_listing {
   biz_id        Int                  @id @default(autoincrement())
   biz_name      String
   biz_email     String
@@ -107,7 +109,7 @@ model Business_listing {
   biz_lat       Float
   biz_long      Float
   biz_coords    Float[]
-  location      Itinerary_locations? @relation(fields: [loc_id], references: [loc_id])
+  location      itinerary_locations? @relation(fields: [loc_id], references: [loc_id])
 }
 
 // model Itinerary_sharing {

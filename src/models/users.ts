@@ -1,5 +1,5 @@
 import { prisma } from '../server';
-import { Users } from '@prisma/client'
+import { users } from '@prisma/client'
 import { FirebaseUser } from '../../globals';
 
 //Add new firebase signup to database
@@ -15,8 +15,17 @@ export async function addNewUser (user: FirebaseUser) {
     return newUser;
 };
 
+export async function getUserByFirebaseUUID (uid: string) {
+    const user = await prisma.users.findUnique({
+        where: {
+            firebase_uuid: uid
+        }
+    });
+    return user
+};
+
 //Delete user from database
-export async function deleteUser(uid: number) {
+export async function deleteUser(uid: string) {
     const deletedUser = await prisma.users.delete({
         where: {
             firebase_uuid: uid

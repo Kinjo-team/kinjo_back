@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Itinerary_locations } from '@prisma/client';
+import { itinerary_locations } from '@prisma/client';
 import {
   fetchAllLocations,
   fetchLocationByLocationID,
@@ -133,7 +133,7 @@ export const getLocationsWithDurationLessThan = async (req: Request, res: Respon
 };
 
 export const addLocation = async (req: Request, res: Response) => {
-  const location: Itinerary_locations = req.body;
+  const location: itinerary_locations = req.body;
   try {
     const newLocation = await createItineraryLocation(location);
     res.status(201).json(newLocation);
@@ -141,7 +141,6 @@ export const addLocation = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'An error occurred while creating the location.' });
 };
 
-  const location: Itinerary_locations = req.body;
   try {
     const newLocation = await createItineraryLocation(location);
     res.status(201).json(newLocation);
@@ -151,7 +150,7 @@ export const addLocation = async (req: Request, res: Response) => {
 };
   
 export const updateLocation = async (req: Request, res: Response) => {
-  const location: Itinerary_locations = req.body;
+  const location: itinerary_locations = req.body;
   try {
       const modifiedLocation = await updateItineraryLocation(location);
       res.status(200).json(modifiedLocation);

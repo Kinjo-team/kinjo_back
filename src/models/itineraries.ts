@@ -1,4 +1,4 @@
-import { Itineraries } from '@prisma/client';
+import { itineraries } from '@prisma/client';
 import { prisma } from '../server';
 
 //GET
@@ -135,7 +135,7 @@ export async function fetchLocationsByItineraryId (itineraryID: number) {
 //   return newItinerary.itinerary_name;
 //   }
 
-export const createItinerary = async (itinerary: Itineraries) => {
+export const createItinerary = async (itinerary: itineraries) => {
     const newItinerary = await prisma.itineraries.create({
       data: {
         creator_id: itinerary.creator_id,
@@ -152,7 +152,7 @@ export const createItinerary = async (itinerary: Itineraries) => {
 
 //PATCH
 //Modify existing itinerary
-export async function modifyItinerary(itinerary: Itineraries) {
+export async function modifyItinerary(itinerary: itineraries) {
 
     const { itinerary_id } = itinerary;
 

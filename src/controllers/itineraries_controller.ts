@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Itineraries } from '@prisma/client';
+import { itineraries } from '@prisma/client';
 import {
   fetchAllItineraries,
   fetchItineraryByName,
@@ -178,7 +178,7 @@ export const getLocationsByItineraryId = async (req: Request, res: Response) => 
 
 export const addItinerary = async (req: Request, res: Response) => {
 
-  const itinerary: Itineraries = req.body;
+  const itinerary: itineraries = req.body;
   try {
     const newItinerary = await createItinerary(itinerary);
     res.status(201).json(newItinerary);
@@ -189,7 +189,7 @@ export const addItinerary = async (req: Request, res: Response) => {
 
 export const updateItinerary = async (req: Request, res: Response) => {
 
-  const itinerary: Itineraries = req.body;
+  const itinerary: itineraries = req.body;
   try {
     const modifiedItinerary = await modifyItinerary(itinerary);
     res.status(200).json(modifiedItinerary);
