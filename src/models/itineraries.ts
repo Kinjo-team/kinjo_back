@@ -2,6 +2,34 @@ import { itineraries } from "@prisma/client";
 import { prisma } from "../server";
 
 //GET
+// Return itineraries by search option
+export async function fetchItinerariesBySearchOption(option: string, value: string) {
+    let itineraries: any[] = [];
+
+    if (option === "Name") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_name: { contains: value },
+            },
+        });
+    } else if (option === "Tag") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_tags: { has: value },
+            },
+        });
+    } else if (option === "User") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                user: {
+                    username: value,
+                },
+            },
+        });
+    }
+    return itineraries;
+}
+
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
   return await prisma.itineraries.findMany();

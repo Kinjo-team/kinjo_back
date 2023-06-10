@@ -5,6 +5,7 @@ import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
 
 import {
+  searchItineraries,
   getAllItineraries,
   getItineraryByName,
   getItineraryByID,
@@ -70,6 +71,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // itineraries_controller.ts
+app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/id/:id", validateID, getItineraryByID);
