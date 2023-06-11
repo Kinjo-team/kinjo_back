@@ -5,24 +5,34 @@ import { prisma } from "../server";
 // Return itineraries by search option
 export async function fetchItinerariesBySearchOption(option: string, value: string) {
     let itineraries: any[] = [];
+    value = value.toLowerCase();
 
     if (option === "Name") {
         itineraries = await prisma.itineraries.findMany({
             where: {
-                itinerary_name: { contains: value },
+                itinerary_name: { 
+                  contains: value,
+                  mode: "insensitive",
+                },
             },
         });
     } else if (option === "Tag") {
         itineraries = await prisma.itineraries.findMany({
             where: {
-                itinerary_tags: { has: value },
+                itinerary_tags: {
+                  has: value,
+                  //mode: "insensitive",
+                },
             },
         });
     } else if (option === "User") {
         itineraries = await prisma.itineraries.findMany({
             where: {
                 user: {
-                    username: value,
+                    username: {
+                      equals: value,
+                      // mode: "insensitive",
+                    }
                 },
             },
         });
