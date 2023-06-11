@@ -85,63 +85,63 @@ export async function fetchLocationsByLocationName(name: string) {
 //POST
 
 // Prisma.create function for Itinerary_locations table
-export const createItineraryLocation = async (location: locations) => {
-  const itineraryLocation = await prisma.locations.create({
-    data: {
-      // creator_id: location.creator_id,
-      loc_name: location.loc_name,
-      // loc_lat: location.loc_lat,
-      // loc_long: location.loc_long,
-      loc_coords: location.loc_coords,
-      // loc_address: location.loc_address,
-      // loc_duration: location.loc_duration,
-      loc_descr_en: location.loc_descr_en,
-      // loc_descr_jp: location.loc_descr_jp,
-      loc_imgUrls: location.loc_imgUrls,
-      // loc_tags: location.loc_tags,
-    },
-  });
+// export const createItineraryLocation = async (location: locations) => {
+//   const itineraryLocation = await prisma.locations.create({
+//     data: {
+// creator_id: location.creator_id,
+// loc_name: location.loc_name,
+// loc_lat: location.loc_lat,
+// loc_long: location.loc_long,
+// loc_coords: location.loc_coords,
+// loc_address: location.loc_address,
+// loc_duration: location.loc_duration,
+// loc_descr_en: location.loc_descr_en,
+// loc_descr_jp: location.loc_descr_jp,
+// loc_imgUrls: location.loc_imgUrls,
+// loc_tags: location.loc_tags,
+//     },
+//   });
 
-  return itineraryLocation;
-};
+//   return itineraryLocation;
+// };
 
 //   //PATCH
-export const updateItineraryLocation = async (location: locations) => {
-  const itineraryLocation = await prisma.locations.update({
-    where: {
-      loc_id: location.loc_id,
-    },
-    data: {
-      // creator_id: location.creator_id,
-      loc_name: location.loc_name,
-      // loc_lat: location.loc_lat,
-      // loc_long: location.loc_long,
-      loc_coords: location.loc_coords,
-      // loc_address: location.loc_address,
-      // loc_duration: location.loc_duration,
-      loc_descr_en: location.loc_descr_en,
-      // loc_descr_jp: location.loc_descr_jp,
-      loc_imgUrls: location.loc_imgUrls,
-      // loc_tags: location.loc_tags,
-    },
-  });
+// export const updateItineraryLocation = async (location: locations) => {
+//   const itineraryLocation = await prisma.locations.update({
+//     where: {
+//       loc_id: location.loc_id,
+//     },
+//     data: {
+// creator_id: location.creator_id,
+// loc_name: location.loc_name,
+// loc_lat: location.loc_lat,
+// loc_long: location.loc_long,
+// loc_coords: location.loc_coords,
+// loc_address: location.loc_address,
+// loc_duration: location.loc_duration,
+// loc_descr_en: location.loc_descr_en,
+// loc_descr_jp: location.loc_descr_jp,
+// loc_imgUrls: location.loc_imgUrls,
+// loc_tags: location.loc_tags,
+//     },
+//   });
 
-  return itineraryLocation;
-};
+//   return itineraryLocation;
+// };
 
 //DELETE
 
 //Delete itinerary by ID
-export async function deleteLocationsByItineraryID(locationID: number) {
-  // const { loc_id } = location;
-  const deleteItinerary = await prisma.locations.delete({
-    where: {
-      loc_id: locationID,
-    },
-  });
+// export async function deleteLocationsByItineraryID(locationID: number) {
+// const { loc_id } = location;
+//   const deleteItinerary = await prisma.locations.delete({
+//     where: {
+//       loc_id: locationID,
+//     },
+//   });
 
-  return deleteItinerary;
-}
+//   return deleteItinerary;
+// }
 
 // //Delete *all* locations by Creator ID
 // export async function deleteLocationsByCreatorID(creatorID: number) {

@@ -8,9 +8,9 @@ import {
   // fetchLocationsByTags,
   //   fetchLocationsWithDurationGreaterThan,
   //   fetchLocationsWithDurationLessThan,
-  createItineraryLocation,
-  updateItineraryLocation,
-  deleteLocationsByItineraryID,
+  // createItineraryLocation,
+  // updateItineraryLocation,
+  // deleteLocationsByItineraryID,
   // deleteLocationsByCreatorID,
 } from "../models/locations";
 import { validationResult } from "express-validator";
@@ -151,58 +151,58 @@ export const getLocationsByLocationName = async (
 //   }
 // };
 
-export const addLocation = async (req: Request, res: Response) => {
-  const location: locations = req.body;
-  try {
-    const newLocation = await createItineraryLocation(location);
-    res.status(201).json(newLocation);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while creating the location." });
-  }
+// export const addLocation = async (req: Request, res: Response) => {
+//   const location: locations = req.body;
+//   try {
+//     const newLocation = await createItineraryLocation(location);
+//     res.status(201).json(newLocation);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while creating the location." });
+//   }
 
-  try {
-    const newLocation = await createItineraryLocation(location);
-    res.status(201).json(newLocation);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while creating the location." });
-  }
-};
+//   try {
+//     const newLocation = await createItineraryLocation(location);
+//     res.status(201).json(newLocation);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while creating the location." });
+//   }
+// };
 
-export const updateLocation = async (req: Request, res: Response) => {
-  const location: locations = req.body;
-  try {
-    const modifiedLocation = await updateItineraryLocation(location);
-    res.status(200).json(modifiedLocation);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while modifying the location." });
-  }
-};
+// export const updateLocation = async (req: Request, res: Response) => {
+//   const location: locations = req.body;
+//   try {
+//     const modifiedLocation = await updateItineraryLocation(location);
+//     res.status(200).json(modifiedLocation);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while modifying the location." });
+//   }
+// };
 
-export const deleteLocByLocID = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // Validation errors occurred
-    return res.status(400).json({ errors: errors.array() });
-  }
+// export const deleteLocByLocID = async (req: Request, res: Response) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     // Validation errors occurred
+//     return res.status(400).json({ errors: errors.array() });
+//   }
 
-  const { locationID } = req.params;
-  try {
-    const deletedLocation = await deleteLocationsByItineraryID(
-      Number(locationID)
-    );
-    res.status(200).json(deletedLocation);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while deleting the location." });
-  }
-};
+//   const { locationID } = req.params;
+//   try {
+//     const deletedLocation = await deleteLocationsByItineraryID(
+//       Number(locationID)
+//     );
+//     res.status(200).json(deletedLocation);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while deleting the location." });
+//   }
+// };
 
 // export const deleteLocsByCreatorID = async (req: Request, res: Response) => {
 //   const errors = validationResult(req);

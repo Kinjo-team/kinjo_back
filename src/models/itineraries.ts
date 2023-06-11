@@ -1,5 +1,6 @@
-import { itineraries } from "@prisma/client";
+import { itineraries, locations } from "@prisma/client";
 import { prisma } from "../server";
+import { ItineraryData } from "../../globals";
 
 //GET
 //Returns all stored itineraries
@@ -127,22 +128,49 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   return newItinerary.itinerary_name;
 //   }
 
-// export const createItinerary = async (itineraryData) => {
-//     const newItinerary = await prisma.itineraries.create({
-//       data: {
-//         itinerary_name: itineraryData.itinerary_name,
-//         itinerary_tags: itineraryData.itinerary_tags,
-//         location_ids: itineraryData.location_ids,
-//         location_data: {
-//           loc_coords: itineraryData.locationData.loc_coords,
-//           loc_name: itineraryData.locationData.loc_name,
-//           loc_descr_en: itineraryData.locationData.loc_descr_en,
-//         },
-//       },
-//     });
+export async function createItinerary(data: ItineraryData) {
+  const {
+    itinerary_name,
+    itinerary_descr,
+    itinerary_tags,
+    // user_id,
+    locationData,
+  } = data;
 
-//     return newItinerary;
-//   };
+  // Insert itinerary into the "itineraries" table
+  const createdItinerary = await prisma.itineraries.create({
+    data: {
+      itinerary_name,
+      itinerary_descr,
+      itinerary_tags,
+      // user_id,
+    },
+  });
+
+  console.log("Created itinerary:", createdItinerary);
+  console.log("Location data:", locationData);
+
+  // Insert location into the "locations" table
+  const createdLocation = await prisma.locations.create({
+    data: {
+      loc_name: locationData.loc_name,
+      loc_coords: locationData.loc_coords,
+      loc_descr_en: locationData.loc_descr_en,
+      loc_tags: [...locationData.loc_tags],
+    },
+  });
+
+  console.log("Created location:", createdLocation);
+
+  // Insert itinerary_location record into the "itinerary_location" table
+  await prisma.itinerary_location.create({
+    data: {
+      itinerary_id: createdItinerary.itinerary_id,
+      location_id: createdLocation.loc_id,
+    },
+  });
+  console.log("Inserted itinerary_location record.");
+}
 
 //PATCH
 //Modify existing itinerary

@@ -139,32 +139,32 @@ model users {
   firebase_uuid  String   @unique
   username      String   @unique
   user_email    String   @unique
-  itineraries   itineraries[]
+  // itineraries   itineraries[]
 }
 
 model itineraries {
-  itinerary_id   Int      @id @default(autoincrement())
-  user_id        Int
-  itinerary_name  String   @unique
+  itinerary_id    Int               @id @default(autoincrement())
+  user_id         Int?
+  itinerary_name  String           @unique
   itinerary_descr String
   itinerary_tags  String[]
-  user            users    @relation(fields: [user_id], references: [user_id])
+  // user            users?            @relation(fields: [user_id], references: [user_id])
   itinerary_locations itinerary_location[]
 }
 
 model locations {
-  loc_id          Int      @id @default(autoincrement())
+  loc_id          Int               @id @default(autoincrement())
   loc_name        String
   loc_coords      Float[]
   loc_descr_en    String
-  loc_imgUrls     String[]
+  loc_tags     String[]
   itinerary_locations itinerary_location[]
 }
 
 model itinerary_location {
-  id              Int     @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   itinerary_id    Int
   location_id     Int
-  itinerary       itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
-  location        locations  @relation(fields: [location_id], references: [loc_id])
+  itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
+  location        locations        @relation(fields: [location_id], references: [loc_id])
 }
