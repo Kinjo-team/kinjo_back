@@ -2,6 +2,13 @@ import { itineraries, locations } from "@prisma/client";
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 
+interface LocationData {
+  loc_coords: [number, number];
+  loc_name: string;
+  loc_descr_en: string;
+  loc_tags: string[];
+}
+
 //GET
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
@@ -148,28 +155,36 @@ export async function createItinerary(data: ItineraryData) {
   });
 
   console.log("Created itinerary:", createdItinerary);
-  console.log("Location data:", locationData);
 
-  // Insert location into the "locations" table
-  const createdLocation = await prisma.locations.create({
-    data: {
-      loc_name: locationData.loc_name,
-      loc_coords: locationData.loc_coords,
-      loc_descr_en: locationData.loc_descr_en,
-      loc_tags: [...locationData.loc_tags],
-    },
+  // Insert locations into the "locations" table
+  const createdLocations = await Promise.all(
+    locationData.map(async (location: LocationData) => {
+      const createdLocation = await prisma.locations.create({
+        data: {
+          loc_name: location.loc_name,
+          loc_coords: location.loc_coords,
+          loc_descr_en: location.loc_descr_en,
+          loc_tags: [...location.loc_tags],
+        },
+      });
+
+      console.log("Created location:", createdLocation);
+
+      return createdLocation;
+    })
+  );
+
+  // Insert itinerary_location records into the "itinerary_location" table
+  const itineraryLocationData = createdLocations.map((location) => ({
+    itinerary_id: createdItinerary.itinerary_id,
+    location_id: location.loc_id,
+  }));
+
+  await prisma.itinerary_location.createMany({
+    data: itineraryLocationData,
   });
 
-  console.log("Created location:", createdLocation);
-
-  // Insert itinerary_location record into the "itinerary_location" table
-  await prisma.itinerary_location.create({
-    data: {
-      itinerary_id: createdItinerary.itinerary_id,
-      location_id: createdLocation.loc_id,
-    },
-  });
-  console.log("Inserted itinerary_location record.");
+  console.log("Inserted itinerary_location records.");
 }
 
 //PATCH
