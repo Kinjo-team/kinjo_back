@@ -14,7 +14,7 @@ import {
   //   getItinerariesWithDurationLessThan,
   //   getLocationsByItineraryName,
   //   getLocationsByItineraryId,
-  //   addItinerary,
+  addItinerary,
   //   updateItinerary,
   //   delItineraryByName,
   //   delItineraryByItineraryID,
@@ -29,9 +29,9 @@ import {
   //   getLocationsByTags,
   //   getLocationsWithDurationGreaterThan,
   //   getLocationsWithDurationLessThan,
-  addLocation,
-  updateLocation,
-  deleteLocByLocID,
+  // addLocation,
+  // updateLocation,
+  // deleteLocByLocID,
   //   deleteLocsByCreatorID,
 } from "./controllers/locations_controller";
 
@@ -77,7 +77,7 @@ app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);
 // app.get('/itineraries/duration/greater/:duration', validateDuration, getItinerariesWithDurationGreaterThan); //FIX
 // app.get('/itineraries/duration/less/:duration', validateDuration, getItinerariesWithDurationLessThan); //FIX
-// app.post('/itineraries', addItinerary);
+app.post("/itineraries", addItinerary);
 // app.patch('/itineraries', updateItinerary);
 // app.delete('/itineraries/name/:name', validateName, delItineraryByName);
 // app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
@@ -91,9 +91,9 @@ app.get("/locations/name/:name", validateName, getLocationsByLocationName);
 // app.get('/locations/tags', getLocationsByTags);
 // app.get('/locations/duration/greater/:duration', validateDuration, getLocationsWithDurationGreaterThan);
 // app.get('/locations/duration/less/:duration', validateDuration, getLocationsWithDurationLessThan);
-app.post("/locations", addLocation);
-app.patch("/locations", updateLocation);
-app.delete("/locations/id/:id", validateID, deleteLocByLocID);
+// app.post("/locations", addLocation);
+// app.patch("/locations", updateLocation);
+// app.delete("/locations/id/:id", validateID, deleteLocByLocID);
 // app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
 
 // users_controller.ts

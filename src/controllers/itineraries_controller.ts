@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { itineraries } from "@prisma/client";
+
 import {
   fetchAllItineraries,
   fetchItineraryByName,
@@ -10,12 +10,16 @@ import {
   //   fetchItinerariesWithDurationLessThan,
   //   fetchLocationsByItineraryName,
   //   fetchLocationsByItineraryId,
-  //   createItinerary,
+  createItinerary,
   //   modifyItinerary,
   //   deleteItineraryByName,
   //   deleteItineraryByItineraryID,
   //   deleteItineraryByCreatorID,
 } from "../models/itineraries";
+
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 import { validationResult } from "express-validator";
 
@@ -182,16 +186,15 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
 //   }
 // };
 
-// export const addItinerary = async (req: Request, res: Response) => {
-
-//   const itinerary: itineraries = req.body;
-//   try {
-//     const newItinerary = await createItinerary(itinerary);
-//     res.status(201).json(newItinerary);
-//   } catch (error) {
-//     res.status(500).json({ error: 'An error occurred while creating the itinerary.' });
-//   }
-// };
+export const addItinerary = async (req: Request, res: Response) => {
+  try {
+    await createItinerary(req.body);
+    res.json({ message: "Data inserted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 // export const updateItinerary = async (req: Request, res: Response) => {
 
