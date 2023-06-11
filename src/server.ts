@@ -43,7 +43,11 @@ import {
 
 import { createNewUser, deleteExistingUser } from './controllers/users_controller';
 
+
+
 dotenv.config();
+
+export const prisma = new PrismaClient();
 
 // const express = require('express');
 const app: Express = express();
@@ -52,8 +56,6 @@ const PORT = process.env.PORT || 8000;
 // const corsOptions = {
 //     origin: "http://localhost:3000"
 // }
-
-export const prisma = new PrismaClient();
 
 //Middleware
 app.use(express.json());

@@ -16,7 +16,7 @@ export async function addNewUser (user: FirebaseUser) {
 };
 
 //Delete user from database
-export async function deleteUser(uid: number) {
+export async function deleteUser(uid: string) {
     const deletedUser = await prisma.users.delete({
         where: {
             firebase_uuid: uid

@@ -57,7 +57,7 @@ export const getLocationsByCreatorID = async (req: Request, res: Response) => {
 
   const { id } = req.params;
   try {
-    const locations = await fetchLocationsByCreatorID(Number(id));
+    const locations = await fetchLocationsByCreatorID(id);
     res.status(200).json(locations);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while fetching the locations.' });
@@ -139,15 +139,7 @@ export const addLocation = async (req: Request, res: Response) => {
     res.status(201).json(newLocation);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while creating the location.' });
-};
-
-  const location: Itinerary_locations = req.body;
-  try {
-    const newLocation = await createItineraryLocation(location);
-    res.status(201).json(newLocation);
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while creating the location.' });
-  }
+}
 };
   
 export const updateLocation = async (req: Request, res: Response) => {
@@ -187,9 +179,10 @@ export const deleteLocsByCreatorID = async (req: Request, res: Response) => {
 
   const { creatorID } = req.params;
   try {
-      const deletedLocationsCount = await deleteLocationsByCreatorID(Number(creatorID));
+      const deletedLocationsCount = await deleteLocationsByCreatorID(creatorID);
       res.status(200).json(deletedLocationsCount);
   } catch (error) {
       res.status(500).json({ error: 'An error occurred while deleting the locations.' });
   }
 };
+

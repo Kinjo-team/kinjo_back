@@ -12,7 +12,7 @@ datasource db {
 
 model Users {
   user_id                        Int                   @id @default(autoincrement())
-  firebase_uuid                  Int                   @unique
+  firebase_uuid                  String                @unique
   username                       String                @unique
   first_name                     String?
   last_name                      String?
@@ -35,56 +35,59 @@ model Users {
 }
 
 model Itineraries {
-  itinerary_id       Int                @id @default(autoincrement())
-  creator            Users              @relation(fields: [creator_id], references: [user_id])
-  creator_id         Int
-  itinerary_name     String             @unique
-  itinerary_tags     String[]
-  location_ids       Int[]
-  itinerary_duration Int?
-  ratings            Itinerary_rating[]
+  itinerary_id                   Int                   @id
+  creator                        Users                 @relation(fields: [creator_id], references: [firebase_uuid])
+  creator_id                     String
+  itinerary_name                 String                @unique
+  itinerary_tags                 String[]
+  location_ids                   Float[]
+  itinerary_duration             Int?
+  ratings                        Itinerary_rating[]
+  associated_itinerary_locations Itinerary_locations[]
   // Itinerary_sharing  Itinerary_sharing[]
 }
 
 model Itinerary_rating {
   itinerary_id            Int          @id
   rating                  Int?
-  user                    Users        @relation(fields: [user_id], references: [user_id])
-  user_id                 Int
+  user                    Users        @relation(fields: [user_uuid], references: [firebase_uuid])
+  user_uuid               String
   iterinary_comments_en   String?
   itinerary_comments_jp   String?
-  Itineraries             Itineraries? @relation(fields: [itinerariesItinerary_id], references: [itinerary_id])
-  itinerariesItinerary_id Int?
+  Itineraries             Itineraries? @relation(fields: [associated_itinerary_id], references: [itinerary_id])
+  associated_itinerary_id Int
 }
 
 model Itinerary_locations {
-  loc_id           Int                @id @default(autoincrement())
-  creator          Users              @relation(fields: [creator_id], references: [user_id])
-  creator_id       Int
-  loc_name         String
-  loc_lat          Float
-  loc_long         Float
-  loc_coords       Float[]
-  loc_address      String?
-  loc_duration     Int?
-  loc_descr_en     String?
-  loc_descr_jp     String?
-  loc_imgUrls      String[]
-  loc_tags         String[]
-  ratings          Location_rating[]
-  Business_listing Business_listing[]
+  loc_id                  Float              @id
+  creator                 Users              @relation(fields: [creator_uuid], references: [firebase_uuid])
+  creator_uuid            String
+  associated_itinerary_id Itineraries?       @relation(fields: [itinerary_id], references: [itinerary_id])
+  itinerary_id            Int?
+  loc_name                String
+  loc_lat                 Float
+  loc_long                Float
+  loc_coords              Float[]
+  loc_address             String?
+  loc_duration            Int?
+  loc_descr_en            String?
+  loc_descr_jp            String?
+  loc_imgUrls             String[]
+  loc_tags                String[]
+  ratings                 Location_rating[]
+  Business_listing        Business_listing[]
   // Location_sharing Location_sharing[]
 }
 
 model Location_rating {
   loc_id                    Int                  @id
-  user                      Users                @relation(fields: [user_id], references: [user_id])
-  user_id                   Int
+  user                      Users                @relation(fields: [user_uuid], references: [firebase_uuid])
+  user_uuid                 String
   loc_rating                Int?
   loc_comments_en           String?
   loc_comments_jp           String?
   Itinerary_locations       Itinerary_locations? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
-  itinerary_locationsLoc_id Int?
+  itinerary_locationsLoc_id Float?
 }
 
 model Badge {
@@ -103,7 +106,7 @@ model Business_listing {
   biz_poc_first String
   biz_poc_last  String
   biz_desc      String
-  loc_id        Int?
+  loc_id        Float?
   biz_lat       Float
   biz_long      Float
   biz_coords    Float[]

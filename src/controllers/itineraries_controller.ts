@@ -80,7 +80,7 @@ if (!errors.isEmpty()) {
 
 const { id } = req.params;
 try {
-  const itinerary = await fetchItineraryByCreatorID(Number(id));
+  const itinerary = await fetchItineraryByCreatorID(id);
   if (itinerary) {
     res.status(200).json(itinerary);
   } else {
@@ -242,7 +242,7 @@ export const delItineraryByCreatorID = async (req: Request, res: Response) => {
 
   const { creatorID } = req.params;
   try {
-    const deletedItinerariesCount = await deleteItineraryByCreatorID(Number(creatorID));
+    const deletedItinerariesCount = await deleteItineraryByCreatorID(creatorID);
     res.status(200).json(deletedItinerariesCount);
   } catch (error) {
     res.status(500).json({ error: 'An error occurred while deleting the itineraries.' });

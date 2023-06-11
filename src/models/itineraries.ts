@@ -34,7 +34,7 @@ export async function fetchItineraryByID (id: number) {
 }
 
 //Return itinerary by Creator ID
-export async function fetchItineraryByCreatorID (id: number) {
+export async function fetchItineraryByCreatorID (id: string) {
 
     const itineraryByCreatorID = await prisma.itineraries.findFirst({
         where: {
@@ -140,6 +140,7 @@ export const createItinerary = async (itinerary: Itineraries) => {
       data: {
         creator_id: itinerary.creator_id,
         itinerary_name: itinerary.itinerary_name,
+        itinerary_id: itinerary.itinerary_id,
         itinerary_tags: itinerary.itinerary_tags,
         location_ids: itinerary.location_ids,
         itinerary_duration: itinerary.itinerary_duration,
@@ -198,7 +199,7 @@ export async function deleteItineraryByItineraryID(itineraryID: number) {
 }
 
 //Delete itinerary by Creator ID
-export async function deleteItineraryByCreatorID(creatorID: number) {
+export async function deleteItineraryByCreatorID(creatorID: string) {
     // const { creator_id } = itinerary;
     const deleteItinerary = await prisma.itineraries.deleteMany({
         where: {

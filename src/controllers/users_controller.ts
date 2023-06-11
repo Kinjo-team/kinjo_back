@@ -15,7 +15,7 @@ export const createNewUser = async (req: Request, res: Response) => {
 
 export const deleteExistingUser = async (req: Request, res: Response) => {
 
-    const uid = Number(req.params.uid);
+    const uid = req.params.uid;
     console.log(uid);
 
     try {

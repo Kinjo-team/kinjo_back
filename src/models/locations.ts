@@ -22,11 +22,11 @@ export async function fetchLocationByLocationID (id: number) {
 }
 
 //Get locations by Creator ID
-export async function fetchLocationsByCreatorID (id: number) {
+export async function fetchLocationsByCreatorID (id: string) {
 
     const locationsByCreatorID = await prisma.itinerary_locations.findMany({
         where: {
-            creator_id: id
+            creator_uuid: id
             }
     });
 
@@ -93,8 +93,9 @@ export const createItineraryLocation = async (location: Itinerary_locations) => 
 
     const itineraryLocation = await prisma.itinerary_locations.create({
       data: {
-        creator_id: location.creator_id,
+        creator_uuid: location.creator_uuid,
         loc_name: location.loc_name,
+        loc_id: location.loc_id,
         loc_lat: location.loc_lat,
         loc_long: location.loc_long,
         loc_coords: location.loc_coords,
@@ -117,7 +118,7 @@ export const createItineraryLocation = async (location: Itinerary_locations) => 
         loc_id: location.loc_id,
       },
       data: {
-        creator_id: location.creator_id,
+        creator_uuid: location.creator_uuid,
         loc_name: location.loc_name,
         loc_lat: location.loc_lat,
         loc_long: location.loc_long,
@@ -149,11 +150,11 @@ export async function deleteLocationsByItineraryID(locationID: number) {
 }
 
 //Delete *all* locations by Creator ID
-export async function deleteLocationsByCreatorID(creatorID: number) {
+export async function deleteLocationsByCreatorID(creatorID: string) {
     // const { creator_id } = location;
     const deleteItinerary = await prisma.itinerary_locations.deleteMany({
         where: {
-            creator_id: creatorID,
+            creator_uuid: creatorID,
         }
     });
 
