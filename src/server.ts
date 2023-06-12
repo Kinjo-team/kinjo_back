@@ -2,9 +2,9 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
-import {spawn} from 'child_process';
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require('./utils/translateFunc.js');
+const detectLanguage = require('./utils/detectLangFunc.js');
 
 import {
   getAllItineraries,
@@ -108,6 +108,8 @@ app.get("/users/:uid", getUserByUUID);
 // translate
 app.post('/translate', async (req, res) => {
   const text = req.body.text;
+  const detected = await detectLanguage(text);
+  console.log(detected);
   const translated = await translateText(text);
   res.send(translated);
 
