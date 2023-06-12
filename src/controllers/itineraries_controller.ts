@@ -21,13 +21,13 @@ import {
 import { validationResult } from "express-validator";
 
 export const searchItineraries = async (req: Request, res: Response) => {
-  // const { option, value } = req.query;
   const option = req.query.option as string;
   const value = req.query.value as string;
 
   try {
     const itineraries = await fetchItinerariesBySearchOption(option, value);
-    res.json(itineraries);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(itineraries);
   } catch (error) {
     res.status(500).json({ error: "An error occurred while searching itineraries." });
   }

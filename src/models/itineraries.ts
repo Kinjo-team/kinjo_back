@@ -17,11 +17,11 @@ export async function fetchItinerariesBySearchOption(option: string, value: stri
             },
         });
     } else if (option === "Tag") {
+        const tags = value.split(' ').map(tag => tag.trim());
         itineraries = await prisma.itineraries.findMany({
             where: {
                 itinerary_tags: {
-                  has: value,
-                  //mode: "insensitive",
+                  hasEvery: tags,
                 },
             },
         });
@@ -30,8 +30,7 @@ export async function fetchItinerariesBySearchOption(option: string, value: stri
             where: {
                 user: {
                     username: {
-                      equals: value,
-                      // mode: "insensitive",
+                      contains: value,
                     }
                 },
             },
