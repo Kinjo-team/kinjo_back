@@ -7,6 +7,7 @@ const translateText = require('./utils/translateFunc.js');
 const detectLanguage = require('./utils/detectLangFunc.js');
 
 import {
+  searchItineraries,
   getAllItineraries,
   getItineraryByName,
   getItineraryByID,
@@ -73,6 +74,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // itineraries_controller.ts
+app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/id/:id", validateID, getItineraryByID);

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import {
+  fetchItinerariesBySearchOption,
   fetchAllItineraries,
   fetchItineraryByName,
   fetchItineraryByID,
@@ -22,6 +23,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { validationResult } from "express-validator";
+
+export const searchItineraries = async (req: Request, res: Response) => {
+  const option = req.query.option as string;
+  const value = req.query.value as string;
+
+  try {
+    const itineraries = await fetchItinerariesBySearchOption(option, value);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while searching itineraries." });
+  }
+}
 
 export const getAllItineraries = async (_req: Request, res: Response) => {
   try {

@@ -10,6 +10,43 @@ interface LocationData {
 }
 
 //GET
+// Return itineraries by search option
+export async function fetchItinerariesBySearchOption(option: string, value: string) {
+    let itineraries: any[] = [];
+    value = value.toLowerCase();
+
+    if (option === "Name") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_name: { 
+                  contains: value,
+                  mode: "insensitive",
+                },
+            },
+        });
+    } else if (option === "Tag") {
+        const tags = value.split(' ').map(tag => tag.trim());
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_tags: {
+                  hasEvery: tags,
+                },
+            },
+        });
+    } else if (option === "User") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                user: {
+                    username: {
+                      contains: value,
+                    }
+                },
+            },
+        });
+    }
+    return itineraries;
+}
+
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
   return await prisma.itineraries.findMany();
