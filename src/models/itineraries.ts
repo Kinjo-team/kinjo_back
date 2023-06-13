@@ -23,6 +23,13 @@ export async function fetchItinerariesBySearchOption(option: string, value: stri
                   mode: "insensitive",
                 },
             },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
         });
     } else if (option === "Tag") {
         const tags = value.split(' ').map(tag => tag.trim());
@@ -32,6 +39,13 @@ export async function fetchItinerariesBySearchOption(option: string, value: stri
                   hasEvery: tags,
                 },
             },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
         });
     } else if (option === "User") {
         itineraries = await prisma.itineraries.findMany({
@@ -39,8 +53,15 @@ export async function fetchItinerariesBySearchOption(option: string, value: stri
                 user: {
                     username: {
                       contains: value,
-                    }
+                    },
                 },
+            },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
             },
         });
     }
