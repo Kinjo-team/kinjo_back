@@ -139,7 +139,7 @@ model users {
   firebase_uuid  String   @unique
   username      String   @unique
   user_email    String   @unique
-  // itineraries   itineraries[]
+  itineraries   itineraries[]
 }
 
 model itineraries {
@@ -148,7 +148,7 @@ model itineraries {
   itinerary_name  String           @unique
   itinerary_descr String
   itinerary_tags  String[]
-  // user            users?            @relation(fields: [user_id], references: [user_id])
+  user            users?            @relation(fields: [user_id], references: [user_id])
   itinerary_locations itinerary_location[]
 }
 
