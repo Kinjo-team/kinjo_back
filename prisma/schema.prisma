@@ -35,15 +35,17 @@ model Users {
 }
 
 model Itineraries {
-  itinerary_id                   Int                   @id
-  creator                        Users                 @relation(fields: [creator_id], references: [firebase_uuid])
-  creator_id                     String
-  itinerary_name                 String                @unique
-  itinerary_tags                 String[]
-  location_ids                   Float[]
-  itinerary_duration             Int?
-  ratings                        Itinerary_rating[]
-  associated_itinerary_locations Itinerary_locations[]
+  itinerary_id        Int                   @id
+  creator             Users                 @relation(fields: [creator_id], references: [firebase_uuid])
+  creator_id          String
+  itinerary_name      String                @unique
+  itinerary_tags      String[]
+  itinerary_descr_en  String?
+  itinerary_descr_jp  String?
+  location_ids        Float[]
+  itinerary_duration  Int?
+  ratings             Itinerary_rating[]
+  itinerary_locations Itinerary_locations[]
   // Itinerary_sharing  Itinerary_sharing[]
 }
 
