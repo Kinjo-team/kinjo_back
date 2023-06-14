@@ -3,15 +3,15 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
-const translateText = require('./utils/translateFunc.js');
-const detectLanguage = require('./utils/detectLangFunc.js');
+const translateText = require("./utils/translateFunc.js");
+const detectLanguage = require("./utils/detectLangFunc.js");
 
 import {
   searchItineraries,
   getAllItineraries,
   getItineraryByName,
-  getItineraryByID,
-  getItineraryByCreatorID,
+  // getItineraryByID,
+  // getItineraryByCreatorID,
   getItinerariesWithTags,
   //   getItinerariesWithDurationGreaterThan,
   //   getItinerariesWithDurationLessThan,
@@ -50,6 +50,8 @@ import {
   getUserByUUID,
 } from "./controllers/users_controller";
 
+import { addLikes, fetchTotalLikes } from "./controllers/likes_controller";
+
 dotenv.config();
 
 // const express = require('express');
@@ -59,7 +61,6 @@ const PORT = process.env.PORT || 8000;
 // const corsOptions = {
 //     origin: "http://localhost:3000"
 // }
-
 
 export const prisma = new PrismaClient();
 
@@ -78,36 +79,34 @@ app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 // app.get("/itineraries/id/:id", validateID, getItineraryByID);
-app.get('/itineraries/id/:id', async (req, res) => {
+app.get("/itineraries/id/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-      const itinerary = await prisma.itineraries.findUnique({
-          where: {
-              itinerary_id: parseInt(id),
-          },
+    const itinerary = await prisma.itineraries.findUnique({
+      where: {
+        itinerary_id: parseInt(id),
+      },
+      include: {
+        itinerary_locations: {
           include: {
-              itinerary_locations: {
-                  include: {
-                      location: true
-                  }
-              }
-          }
-      });
+            location: true,
+          },
+        },
+      },
+    });
 
-      if (!itinerary) {
-          return res.status(404).send('Itinerary not found');
-      }
+    if (!itinerary) {
+      return res.status(404).send("Itinerary not found");
+    }
 
-      return res.json(itinerary);
+    return res.json(itinerary);
   } catch (error) {
-      return res.status(500).json({ error: 'Something went wrong' });
+    return res.status(500).json({ error: "Something went wrong" });
   }
 });
 
-
-
-app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
+// app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);
 // app.get('/itineraries/duration/greater/:duration', validateDuration, getItinerariesWithDurationGreaterThan); //FIX
 // app.get('/itineraries/duration/less/:duration', validateDuration, getItinerariesWithDurationLessThan); //FIX
@@ -135,18 +134,18 @@ app.post("/users", createNewUser);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
 
+//likes_controller.ts
+app.get("/likes/total/:itinerary_id", fetchTotalLikes(prisma));
+app.post("/likes", addLikes);
 
 // translate
-app.post('/translate', async (req, res) => {
+app.post("/translate", async (req, res) => {
   const text = req.body.text;
   const detected = await detectLanguage(text);
   console.log(detected);
   const translated = await translateText(text);
   res.send(translated);
-
 });
-
-
 
 // //Listen
 app.listen(PORT, () => {

@@ -13,9 +13,9 @@ export interface FirebaseUser {
 }
 
 interface ItineraryData {
+  firebase_uuid: string;
   itinerary_name: string;
   itinerary_descr: string;
   itinerary_tags: string;
-  // user_id: number;
   locationData: any;
 }

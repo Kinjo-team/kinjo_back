@@ -1,4 +1,3 @@
-import { itineraries, locations } from "@prisma/client";
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 
@@ -85,26 +84,26 @@ export async function fetchItineraryByName(name: string) {
 }
 
 // //Return itinerary by Itinerary ID
-export async function fetchItineraryByID(id: number) {
-  const itineraryByItineraryID = await prisma.itineraries.findFirst({
-    where: {
-      itinerary_id: id,
-    },
-  });
+// export async function fetchItineraryByID(id: number) {
+//   const itineraryByItineraryID = await prisma.itineraries.findFirst({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
 
-  return itineraryByItineraryID;
-}
+//   return itineraryByItineraryID;
+// }
 
 //Return itinerary by Creator ID
-export async function fetchItineraryByCreatorID(id: number) {
-  const itineraryByCreatorID = await prisma.itineraries.findFirst({
-    where: {
-      user_id: id,
-    },
-  });
+// export async function fetchItineraryByCreatorID(id: number) {
+//   const itineraryByCreatorID = await prisma.itineraries.findFirst({
+//     where: {
+//       user_id: id,
+//     },
+//   });
 
-  return itineraryByCreatorID;
-}
+//   return itineraryByCreatorID;
+// }
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -195,20 +194,22 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 
 export async function createItinerary(data: ItineraryData) {
   const {
+    firebase_uuid,
     itinerary_name,
     itinerary_descr,
     itinerary_tags,
-    // user_id,
     locationData,
   } = data;
+
+  console.log("Provided firebase_uuid:", firebase_uuid);
 
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
+      firebase_uuid,
       itinerary_name,
       itinerary_descr,
       itinerary_tags,
-      // user_id,
     },
   });
 

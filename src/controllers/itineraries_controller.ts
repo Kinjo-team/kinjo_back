@@ -4,8 +4,8 @@ import {
   fetchItinerariesBySearchOption,
   fetchAllItineraries,
   fetchItineraryByName,
-  fetchItineraryByID,
-  fetchItineraryByCreatorID,
+  // fetchItineraryByID,
+  // fetchItineraryByCreatorID,
   fetchItinerariesWithTags,
   //   fetchItinerariesWithDurationGreaterThan,
   //   fetchItinerariesWithDurationLessThan,
@@ -30,16 +30,19 @@ export const searchItineraries = async (req: Request, res: Response) => {
 
   try {
     const itineraries = await fetchItinerariesBySearchOption(option, value);
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Content-Type", "application/json");
     res.status(200).json(itineraries);
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while searching itineraries." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while searching itineraries." });
   }
-}
+};
 
 export const getAllItineraries = async (_req: Request, res: Response) => {
   try {
     const itineraries = await fetchAllItineraries();
+    console.log(itineraries);
     res.status(200).json(itineraries);
   } catch (error) {
     res
@@ -70,49 +73,49 @@ export const getItineraryByName = async (req: Request, res: Response) => {
   }
 };
 
-export const getItineraryByID = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // Validation errors occurred
-    return res.status(400).json({ errors: errors.array() });
-  }
+// export const getItineraryByID = async (req: Request, res: Response) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     // Validation errors occurred
+//     return res.status(400).json({ errors: errors.array() });
+//   }
 
-  const { id } = req.params;
-  try {
-    const itinerary = await fetchItineraryByID(Number(id));
-    if (itinerary) {
-      res.status(200).json(itinerary);
-    } else {
-      res.status(404).json({ message: "Itinerary not found." });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the itinerary." });
-  }
-};
+//   const { id } = req.params;
+//   try {
+//     const itinerary = await fetchItineraryByID(Number(id));
+//     if (itinerary) {
+//       res.status(200).json(itinerary);
+//     } else {
+//       res.status(404).json({ message: "Itinerary not found." });
+//     }
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while fetching the itinerary." });
+//   }
+// };
 
-export const getItineraryByCreatorID = async (req: Request, res: Response) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    // Validation errors occurred
-    return res.status(400).json({ errors: errors.array() });
-  }
+// export const getItineraryByCreatorID = async (req: Request, res: Response) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     // Validation errors occurred
+//     return res.status(400).json({ errors: errors.array() });
+//   }
 
-  const { id } = req.params;
-  try {
-    const itinerary = await fetchItineraryByCreatorID(Number(id));
-    if (itinerary) {
-      res.status(200).json(itinerary);
-    } else {
-      res.status(404).json({ message: "Itinerary not found." });
-    }
-  } catch (error) {
-    res
-      .status(500)
-      .json({ error: "An error occurred while fetching the itinerary." });
-  }
-};
+//   const { id } = req.params;
+//   try {
+//     const itinerary = await fetchItineraryByCreatorID(Number(id));
+//     if (itinerary) {
+//       res.status(200).json(itinerary);
+//     } else {
+//       res.status(404).json({ message: "Itinerary not found." });
+//     }
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "An error occurred while fetching the itinerary." });
+//   }
+// };
 
 export const getItinerariesWithTags = async (req: Request, res: Response) => {
   const errors = validationResult(req);
