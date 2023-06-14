@@ -48,6 +48,7 @@ import {
   createNewUser,
   deleteExistingUser,
   getUserByUUID,
+  getUserByName
 } from "./controllers/users_controller";
 
 import { addLikes, fetchTotalLikes } from "./controllers/likes_controller";
@@ -131,6 +132,7 @@ app.get("/locations/name/:name", validateName, getLocationsByLocationName);
 
 // users_controller.ts
 app.post("/users", createNewUser);
+app.get("/users/username/:username", getUserByName);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
 
