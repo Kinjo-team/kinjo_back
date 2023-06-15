@@ -150,16 +150,15 @@ model Itineraries {
   itinerary_tags     String[]
   user               users?                @relation(fields: [firebase_uuid], references: [firebase_uuid]) //Do we need this?
   locationData       Itinerary_locations[]
+  associated_loc_ids Float[]
   likes              likes[]
 }
 
 model Itinerary_locations {
   loc_id                  Float        @id
   loc_name                String
-  // associated_itinerary_id Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
-  // itinerary_id            Float
-  associated_itinerary_id Itineraries? @relation(fields: [itinerary_id], references: [itinerary_id])
-  itinerary_id            Float?
+  associated_itinerary_id Float        @map("itinerary_id") // Renamed and mapped to 'itinerary_id'
+  itinerary               Itineraries? @relation(fields: [associated_itinerary_id], references: [itinerary_id]) // Updated relation with renamed field
   loc_coords              Float[]
   loc_descr_en            String
   loc_descr_jp            String?
