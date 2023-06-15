@@ -1,10 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -133,53 +132,49 @@ datasource db {
 //   shared_with     Users[]             @relation("SharedWith")
 // }
 
-
 model users {
-  user_id       Int      @id @default(autoincrement())
-  firebase_uuid String   @unique
-  username      String   @unique
-  user_email    String   @unique
-  itineraries   itineraries[]
+  user_id       Int           @id @default(autoincrement())
+  firebase_uuid String        @unique
+  username      String        @unique
+  user_email    String        @unique
+  itineraries   Itineraries[]
   likes         likes[]
 }
 
-model itineraries {
-  itinerary_id    Int               @id @default(autoincrement())
-  firebase_uuid   String
-  itinerary_name  String           @unique
-  itinerary_descr String
-  itinerary_tags  String[]
-  user            users?            @relation(fields: [firebase_uuid], references: [firebase_uuid])
-  itinerary_locations itinerary_location[]
-  likes           likes[]
+model Itineraries {
+  itinerary_id       Float                 @id
+  firebase_uuid      String
+  itinerary_name     String                @unique
+  itinerary_descr_en String
+  itinerary_descr_jp String?
+  itinerary_tags     String[]
+  user               users?                @relation(fields: [firebase_uuid], references: [firebase_uuid]) //Do we need this?
+  locationData       Itinerary_locations[]
+  likes              likes[]
 }
 
-model locations {
-  loc_id          Int               @id @default(autoincrement())
-  loc_name        String
-  loc_coords      Float[]
-  loc_descr_en    String
-  loc_tags     String[]
-  itinerary_locations itinerary_location[]
-}
-
-model itinerary_location {
-  id              Int               @id @default(autoincrement())
-  itinerary_id    Int
-  location_id     Int
-  itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
-  location        locations        @relation(fields: [location_id], references: [loc_id])
+model Itinerary_locations {
+  loc_id                  Float        @id
+  loc_name                String
+  // associated_itinerary_id Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+  // itinerary_id            Float
+  associated_itinerary_id Itineraries? @relation(fields: [itinerary_id], references: [itinerary_id])
+  itinerary_id            Float?
+  loc_coords              Float[]
+  loc_descr_en            String
+  loc_descr_jp            String?
+  loc_tags                String[]
 }
 
 model likes {
-  id              Int               @id @default(autoincrement())
-  firebase_uuid   String
-  itinerary_id    Int
-  value           Int
-  type            String
-  createdAt       DateTime          @default(now())
-  user            users             @relation(fields: [firebase_uuid], references: [firebase_uuid])
-  itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Float
+  value         Int
+  type          String
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
 
   @@unique([firebase_uuid, itinerary_id])
 }

@@ -1,15 +1,7 @@
 import { prisma } from "../server";
-import { ItineraryData } from "../../globals";
+// import { ItineraryData } from "../../globals";
 import { Itineraries } from "@prisma/client";
 import { LocationData } from "../../globals";
-
-// interface LocationData {
-//   loc_coords: [number, number];
-//   loc_name: string;
-//   loc_descr_en: string;
-//   loc_descr_jp: string;
-//   loc_tags: string[];
-// }
 
 //GET
 // Return itineraries by search option
@@ -86,16 +78,16 @@ export async function fetchItineraryByName(name: string) {
   return itineraryByName;
 }
 
-// //Return itinerary by Itinerary ID
-// export async function fetchItineraryByID(id: number) {
-//   const itineraryByItineraryID = await prisma.itineraries.findFirst({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
+//Return itinerary by Itinerary ID
+export async function fetchItineraryItineraryByID(itinerary_id: number) {
+  const itineraryByItineraryID = await prisma.itineraries.findUnique({
+    where: {
+      itinerary_id: itinerary_id,
+    },
+  });
 
-//   return itineraryByItineraryID;
-// }
+  return itineraryByItineraryID;
+}
 
 //Return itinerary by Creator ID
 // export async function fetchItineraryByCreatorID(id: number) {
@@ -196,7 +188,8 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   }
 
 export async function createItinerary(data: Itineraries) {
-  const {
+  
+    const {
     itinerary_id,
     firebase_uuid,
     itinerary_name,

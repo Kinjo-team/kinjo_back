@@ -9,6 +9,7 @@ import {
   searchItineraries,
   getAllItineraries,
   getItineraryByName,
+  getItineraryByItineraryID,
   // getItineraryByID,
   // getItineraryByCreatorID,
   getItinerariesWithTags,
@@ -78,33 +79,9 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
+
 // app.get("/itineraries/id/:id", validateID, getItineraryByID);
-app.get("/itineraries/id/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const itinerary = await prisma.itineraries.findUnique({
-      where: {
-        itinerary_id: parseInt(id),
-      },
-      include: {
-        itinerary_locations: {
-          include: {
-            location: true,
-          },
-        },
-      },
-    });
-
-    if (!itinerary) {
-      return res.status(404).send("Itinerary not found");
-    }
-
-    return res.json(itinerary);
-  } catch (error) {
-    return res.status(500).json({ error: "Something went wrong" });
-  }
-});
+app.get("/itineraries/id/:id", getItineraryByItineraryID);
 
 // app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);

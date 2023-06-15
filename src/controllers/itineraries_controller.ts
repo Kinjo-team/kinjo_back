@@ -4,7 +4,7 @@ import {
   fetchItinerariesBySearchOption,
   fetchAllItineraries,
   fetchItineraryByName,
-  // fetchItineraryByID,
+  fetchItineraryItineraryByID,
   // fetchItineraryByCreatorID,
   fetchItinerariesWithTags,
   //   fetchItinerariesWithDurationGreaterThan,
@@ -136,6 +136,26 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
   }
 };
 
+//
+export async function getItineraryByItineraryID (req: Request, res: Response) {
+  
+  const { itinerary_id } = req.params;
+
+try {
+  const itinerary = await fetchItineraryItineraryByID(Number(itinerary_id));
+  
+  if (!itinerary) {
+    return res.status(404).send("Itinerary not found");
+  }
+
+  return res.json(itinerary);
+  
+} catch (error) {
+    return res
+      .status(500)
+      .json({ error: "Something went wrong" });
+  } 
+};
 // export const getItinerariesWithDurationGreaterThan = async (req: Request, res: Response) => {
 
 // const errors = validationResult(req);
