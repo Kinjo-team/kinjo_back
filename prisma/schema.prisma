@@ -152,6 +152,7 @@ model Itineraries {
   locationData       Itinerary_locations[]
   associated_loc_ids Float[]
   likes              likes[]
+  enteredTags        String[]
 }
 
 model Itinerary_locations {

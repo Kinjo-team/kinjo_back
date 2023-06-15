@@ -199,7 +199,7 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
       creator_id: itineraryData.creator_id,
       itinerary_name: itineraryData.itinerary_name,
       itinerary_descr_en: itineraryData.itinerary_descr_en,
-      itinerary_descr_jp: itineraryData.itinerary_descr_jp,
+      itinerary_descr_jp: itineraryData.itinerary_descr_jp ? itineraryData.itinerary_descr_jp : "",
       itinerary_tags: itineraryData.itinerary_tags,
     },
   });
@@ -208,7 +208,9 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
 
   //Get location IDs from objects.
   const itinerary_id: number = itineraryData.itinerary_id;
+  console.log("Itinerary_id: ", itinerary_id)
   const location_ids: number[] = locationData.map((location: Itinerary_locations) => location.loc_id);
+  console.log("Location ids: ", location_ids)
   // Insert locations into the "locations" table
 
     await Promise.all(
@@ -217,7 +219,7 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
         data: {
             loc_id: location.loc_id,
             loc_name: location.loc_name,
-            associated_itinerary_id: location.associated_itinerary_id,
+            associated_itinerary_id: itinerary_id,
             creator_id: location.creator_id,
             loc_coords: location.loc_coords,
             loc_descr_en: location.loc_descr_en,

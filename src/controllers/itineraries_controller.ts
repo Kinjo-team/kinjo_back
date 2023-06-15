@@ -227,6 +227,7 @@ try {
 
 export const addItinerary = async (req: Request, res: Response) => {
 
+
   const itineraryData: ItineraryData = req.body;
   const locationData: [] = itineraryData.locationData;
 
