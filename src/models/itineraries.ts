@@ -79,7 +79,7 @@ export async function fetchItineraryByName(name: string) {
 }
 
 //Return itinerary by Itinerary ID
-export async function fetchItineraryItineraryByID(itinerary_id: number) {
+export async function fetchItineraryByItineraryID(itinerary_id: number) {
   const itineraryByItineraryID = await prisma.itineraries.findUnique({
     where: {
       itinerary_id: itinerary_id,
@@ -196,7 +196,7 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
   const createdItinerary = await prisma.itineraries.create({
     data: {
       itinerary_id: itineraryData.itinerary_id,
-      firebase_uuid: itineraryData.creator_id,
+      creator_id: itineraryData.creator_id,
       itinerary_name: itineraryData.itinerary_name,
       itinerary_descr_en: itineraryData.itinerary_descr_en,
       itinerary_descr_jp: itineraryData.itinerary_descr_jp,
@@ -217,6 +217,8 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
         data: {
             loc_id: location.loc_id,
             loc_name: location.loc_name,
+            associated_itinerary_id: location.associated_itinerary_id,
+            creator_id: location.creator_id,
             loc_coords: location.loc_coords,
             loc_descr_en: location.loc_descr_en,
             loc_descr_jp: location.loc_descr_jp,

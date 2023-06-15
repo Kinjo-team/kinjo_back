@@ -4,7 +4,7 @@ import {
   fetchItinerariesBySearchOption,
   fetchAllItineraries,
   fetchItineraryByName,
-  fetchItineraryItineraryByID,
+  fetchItineraryByItineraryID,
   // fetchItineraryByCreatorID,
   fetchItinerariesWithTags,
   //   fetchItinerariesWithDurationGreaterThan,
@@ -143,7 +143,7 @@ export async function getItineraryByItineraryID (req: Request, res: Response) {
   const { itinerary_id } = req.params;
 
 try {
-  const itinerary = await fetchItineraryItineraryByID(Number(itinerary_id));
+  const itinerary = await fetchItineraryByItineraryID(Number(itinerary_id));
   
   if (!itinerary) {
     return res.status(404).send("Itinerary not found");
