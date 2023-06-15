@@ -10,7 +10,7 @@ import {
   //   fetchItinerariesWithDurationGreaterThan,
   //   fetchItinerariesWithDurationLessThan,
   //   fetchLocationsByItineraryName,
-  //   fetchLocationsByItineraryId,
+  fetchLocationsByItineraryId,
   createItinerary,
   //   modifyItinerary,
   //   deleteItineraryByName,
@@ -18,12 +18,13 @@ import {
   //   deleteItineraryByCreatorID,
 } from "../models/itineraries";
 
-import { PrismaClient } from "@prisma/client";
+import { Itineraries, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 import { validationResult } from "express-validator";
 import { ItineraryData, LocationData } from "../../globals";
+import { create } from "domain";
 
 export const searchItineraries = async (req: Request, res: Response) => {
   const option = req.query.option as string;
@@ -140,14 +141,22 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
 //
 export async function getItineraryByItineraryID (req: Request, res: Response) {
   
-  const { itinerary_id } = req.params;
+  const itinerary_id = Number(req.params.id);
 
 try {
-  const itinerary = await fetchItineraryByItineraryID(Number(itinerary_id));
-  
-  if (!itinerary) {
+  const itinerary: ItineraryData | null = await fetchItineraryByItineraryID(itinerary_id);
+
+  if (itinerary === null) {
     return res.status(404).send("Itinerary not found");
   }
+  
+  const itinerary_locations = await fetchLocationsByItineraryId(itinerary_id);
+  console.log(itinerary);
+  console.log(itinerary_locations.length)
+  console.log(itinerary_locations);
+
+  itinerary['locationData'] = itinerary_locations
+
 
   return res.json(itinerary);
 
@@ -229,15 +238,32 @@ export const addItinerary = async (req: Request, res: Response) => {
 
 
   const itineraryData: ItineraryData = req.body;
-  const locationData: [] = itineraryData.locationData;
 
-  try {
-    await createItinerary(itineraryData, locationData);
-    res.json({ message: "Data inserted successfully" });
-  } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+  if (itineraryData.locationData !== undefined) {
+
+    const locationData: LocationData[] = itineraryData.locationData;
+
+    try { 
+      
+      await createItinerary(itineraryData, locationData);
+      res.json({ message: "Itinerary and locations created successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
+    } else {
+
+      try {
+        
+        await createItinerary(itineraryData);
+        res.json({ message: "Added itinerary only" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+      }
     }
+    
+
 };
 
 // export const updateItinerary = async (req: Request, res: Response) => {

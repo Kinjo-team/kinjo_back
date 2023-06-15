@@ -80,7 +80,8 @@ export async function fetchItineraryByName(name: string) {
 
 //Return itinerary by Itinerary ID
 export async function fetchItineraryByItineraryID(itinerary_id: number) {
-  const itineraryByItineraryID = await prisma.itineraries.findUnique({
+    console.log(itinerary_id);
+  const itineraryByItineraryID = await prisma.itineraries.findFirst({
     where: {
       itinerary_id: itinerary_id,
     },
@@ -155,17 +156,17 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //     return itineraryLocationsByName?.location_ids;
 // }
 
-// //Return itinerary locations by Itinerary ID
-// export async function fetchLocationsByItineraryId (itineraryID: number) {
+//Return itinerary locations by Itinerary ID
+export async function fetchLocationsByItineraryId (itineraryID: number) {
 
-//     const itineraryLocationsByItineraryID = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_id: itineraryID
-//         }
-//     });
+    const itineraryLocationsByItineraryID = await prisma.itinerary_locations.findMany({
+        where: {
+            associated_itinerary_id: itineraryID
+        }
+    });
 
-//     return itineraryLocationsByItineraryID?.location_ids;
-// }
+    return itineraryLocationsByItineraryID;
+}
 
 // POST
 // Add new itinerary
@@ -187,7 +188,7 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   return newItinerary.itinerary_name;
 //   }
 
-export async function createItinerary(itineraryData: ItineraryData, locationData: []) {
+export async function createItinerary(itineraryData: ItineraryData, locationData?: LocationData[] | null) {
   
 
   console.log("Provided firebase_uuid:", itineraryData.creator_id);
@@ -209,12 +210,14 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
   //Get location IDs from objects.
   const itinerary_id: number = itineraryData.itinerary_id;
   console.log("Itinerary_id: ", itinerary_id)
-  const location_ids: number[] = locationData.map((location: Itinerary_locations) => location.loc_id);
+
+  if (locationData != null) {
+  const location_ids: number[] = locationData.map((location: LocationData) => location.loc_id);
   console.log("Location ids: ", location_ids)
   // Insert locations into the "locations" table
 
     await Promise.all(
-    locationData.map(async (location: Itinerary_locations) => {
+    locationData.map(async (location: LocationData) => {
         const createdLocation = await prisma.itinerary_locations.create({
         data: {
             loc_id: location.loc_id,
@@ -239,20 +242,7 @@ export async function createItinerary(itineraryData: ItineraryData, locationData
             associated_loc_ids: location_ids
         }
     })
-  
-
-  // Insert itinerary_location records into the "itinerary_location" table
-//   const itineraryLocationData = createdLocations.map((location: Itinerary_locations) => ({
-//     itinerary_id: createdItinerary.itinerary_id,
-//     loc_id: location.loc_id,
-//     loc_name: location.loc_name,
-//     loc_descr_en: location.loc_descr_en,
-//     loc_descr_jp: location.loc_descr_jp,
-//   }));
-
-//   await prisma.itinerary_locations.createMany({
-//     data: itineraryLocationData,
-//   });
+  }
 
   console.log("Inserted itinerary_location records.");
 }
