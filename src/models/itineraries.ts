@@ -187,59 +187,47 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   return newItinerary.itinerary_name;
 //   }
 
-export async function createItinerary(data: ItineraryData) {
+export async function createItinerary(itineraryData: ItineraryData, locationData: []) {
   
-    const {
-    itinerary_id,
-    firebase_uuid,
-    itinerary_name,
-    itinerary_descr_en,
-    itinerary_descr_jp,
-    itinerary_tags,
-    locationData,
-  } = data;
 
-  console.log("Provided firebase_uuid:", firebase_uuid);
+  console.log("Provided firebase_uuid:", itineraryData.creator_id);
 
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
-      itinerary_id,
-      firebase_uuid,
-      itinerary_name,
-      itinerary_descr_en,
-      itinerary_descr_jp,
-      itinerary_tags,
+      itinerary_id: itineraryData.itinerary_id,
+      firebase_uuid: itineraryData.creator_id,
+      itinerary_name: itineraryData.itinerary_name,
+      itinerary_descr_en: itineraryData.itinerary_descr_en,
+      itinerary_descr_jp: itineraryData.itinerary_descr_jp,
+      itinerary_tags: itineraryData.itinerary_tags,
     },
   });
 
   console.log("Created itinerary:", createdItinerary);
 
   //Get location IDs from objects.
-  const location_ids: number[] = locationData.map((location: Itinerary_locations) => location.loc_id)
+  const itinerary_id: number = itineraryData.itinerary_id;
+  const location_ids: number[] = locationData.map((location: Itinerary_locations) => location.loc_id);
   // Insert locations into the "locations" table
 
-  const createdLocations = await Promise.all(
+    await Promise.all(
     locationData.map(async (location: Itinerary_locations) => {
-      const createdLocation = await prisma.itinerary_locations.create({
+        const createdLocation = await prisma.itinerary_locations.create({
         data: {
-          loc_id: location.loc_id,
-          loc_name: location.loc_name,
-          loc_coords: location.loc_coords,
-          loc_descr_en: location.loc_descr_en,
-          loc_descr_jp: location.loc_descr_jp,
-          loc_tags: [...location.loc_tags],
+            loc_id: location.loc_id,
+            loc_name: location.loc_name,
+            loc_coords: location.loc_coords,
+            loc_descr_en: location.loc_descr_en,
+            loc_descr_jp: location.loc_descr_jp,
+            loc_tags: [...location.loc_tags],
         },
-      });
-
-      console.log("Created location:", createdLocation);
-
-      return createdLocation;
-    })
-  );
+        });
+        console.log("Created location:", createdLocation);
+        })
+    );
 
   //Push location IDs to itinerary
-  const updatedItineraryLocIds = async (location_ids: number[]) => {
     await prisma.itineraries.update({
         where: 
         { itinerary_id: itinerary_id },
@@ -247,7 +235,7 @@ export async function createItinerary(data: ItineraryData) {
             associated_loc_ids: location_ids
         }
     })
-  }
+  
 
   // Insert itinerary_location records into the "itinerary_location" table
 //   const itineraryLocationData = createdLocations.map((location: Itinerary_locations) => ({

@@ -23,6 +23,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { validationResult } from "express-validator";
+import { ItineraryData, LocationData } from "../../globals";
 
 export const searchItineraries = async (req: Request, res: Response) => {
   const option = req.query.option as string;
@@ -149,7 +150,7 @@ try {
   }
 
   return res.json(itinerary);
-  
+
 } catch (error) {
     return res
       .status(500)
@@ -225,13 +226,17 @@ try {
 // };
 
 export const addItinerary = async (req: Request, res: Response) => {
+
+  const itineraryData: ItineraryData = req.body;
+  const locationData: [] = itineraryData.locationData;
+
   try {
-    await createItinerary(req.body);
+    await createItinerary(itineraryData, locationData);
     res.json({ message: "Data inserted successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
 };
 
 // export const updateItinerary = async (req: Request, res: Response) => {
