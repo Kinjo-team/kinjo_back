@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
-const translateText = require("./utils/translateFunc.js");
-const detectLanguage = require("./utils/detectLangFunc.js");
+import { translateText } from "./controllers/translate_controller";
 
 import {
   searchItineraries,
@@ -141,13 +140,7 @@ app.get("/likes/total/:itinerary_id", fetchTotalLikes(prisma));
 app.post("/likes", addLikes);
 
 // translate
-app.post("/translate", async (req, res) => {
-  const text = req.body.text;
-  const detected = await detectLanguage(text);
-  console.log(detected);
-  const translated = await translateText(text);
-  res.send(translated);
-});
+app.post("/translate", translateText);
 
 // //Listen
 app.listen(PORT, () => {

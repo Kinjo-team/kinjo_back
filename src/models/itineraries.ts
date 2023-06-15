@@ -1,12 +1,15 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
+import { Itineraries } from "@prisma/client";
+import { LocationData } from "../../globals";
 
-interface LocationData {
-  loc_coords: [number, number];
-  loc_name: string;
-  loc_descr_en: string;
-  loc_tags: string[];
-}
+// interface LocationData {
+//   loc_coords: [number, number];
+//   loc_name: string;
+//   loc_descr_en: string;
+//   loc_descr_jp: string;
+//   loc_tags: string[];
+// }
 
 //GET
 // Return itineraries by search option
@@ -192,11 +195,13 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   return newItinerary.itinerary_name;
 //   }
 
-export async function createItinerary(data: ItineraryData) {
+export async function createItinerary(data: Itineraries) {
   const {
+    itinerary_id,
     firebase_uuid,
     itinerary_name,
-    itinerary_descr,
+    itinerary_descr_en,
+    itinerary_descr_jp,
     itinerary_tags,
     locationData,
   } = data;
@@ -206,10 +211,13 @@ export async function createItinerary(data: ItineraryData) {
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
+      itinerary_id,
       firebase_uuid,
       itinerary_name,
-      itinerary_descr,
+      itinerary_descr_en,
+      itinerary_descr_jp,
       itinerary_tags,
+      locationData,
     },
   });
 
@@ -218,11 +226,13 @@ export async function createItinerary(data: ItineraryData) {
   // Insert locations into the "locations" table
   const createdLocations = await Promise.all(
     locationData.map(async (location: LocationData) => {
-      const createdLocation = await prisma.locations.create({
+      const createdLocation = await prisma.itinerary_locations.create({
         data: {
+          loc_id: location.loc_id,
           loc_name: location.loc_name,
           loc_coords: location.loc_coords,
           loc_descr_en: location.loc_descr_en,
+          loc_descr_jp: location.loc_descr_jp,
           loc_tags: [...location.loc_tags],
         },
       });
@@ -234,12 +244,12 @@ export async function createItinerary(data: ItineraryData) {
   );
 
   // Insert itinerary_location records into the "itinerary_location" table
-  const itineraryLocationData = createdLocations.map((location) => ({
+  const itineraryLocationData = createdLocations.map((location: LocationData) => ({
     itinerary_id: createdItinerary.itinerary_id,
     location_id: location.loc_id,
   }));
 
-  await prisma.itinerary_location.createMany({
+  await prisma.itinerary_locations.createMany({
     data: itineraryLocationData,
   });
 
