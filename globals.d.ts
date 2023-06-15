@@ -20,8 +20,6 @@ interface ItineraryData {
   itinerary_descr_jp?: string | null;
   itinerary_tags: string[];
   locationData?: LocationData[];
-  itinerary_descr_en: string;
-  itinerary_descr_jp: string;
 }
 
 export interface LocationData {
