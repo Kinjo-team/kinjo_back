@@ -39,6 +39,13 @@ import {
 } from "./controllers/locations_controller";
 
 import {
+  createNewBookmark,
+  deleteExistingBookmark,
+  getAllBookmarksFromUserByID
+} from "./controllers/bookmarks_controller";
+
+
+import {
   validateName,
   validateID,
   validateDuration,
@@ -148,6 +155,12 @@ app.post("/translate", async (req, res) => {
   const translated = await translateText(text);
   res.send(translated);
 });
+
+//bookmarks_controller.ts
+app.post("/bookmarks", createNewBookmark);
+app.delete("/bookmarks", deleteExistingBookmark);
+app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
+
 
 // //Listen
 app.listen(PORT, () => {

@@ -141,6 +141,7 @@ model users {
   user_email    String   @unique
   itineraries   itineraries[]
   likes         likes[]
+  bookmarks     bookmarks[]
 }
 
 model itineraries {
@@ -152,6 +153,7 @@ model itineraries {
   user            users?            @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary_locations itinerary_location[]
   likes           likes[]
+  bookmarks       bookmarks[]
 }
 
 model locations {
@@ -180,6 +182,17 @@ model likes {
   createdAt       DateTime          @default(now())
   user            users             @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
+
+  @@unique([firebase_uuid, itinerary_id])
+}
+
+model bookmarks {
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Int
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
 
   @@unique([firebase_uuid, itinerary_id])
 }
