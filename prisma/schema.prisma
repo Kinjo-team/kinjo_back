@@ -137,11 +137,11 @@ model users {
   firebase_uuid String        @unique
   username      String        @unique
   user_email    String        @unique
-  itineraries   Itineraries[]
+  itineraries   itineraries[]
   likes         likes[]
 }
 
-model Itineraries {
+model itineraries {
   itinerary_id       Float                 @id
   creator_id         String
   itinerary_name     String                @unique
@@ -149,18 +149,18 @@ model Itineraries {
   itinerary_descr_jp String?
   itinerary_tags     String[]
   user               users?                @relation(fields: [creator_id], references: [firebase_uuid]) //Do we need this?
-  locationData       Itinerary_locations[]
+  locationData       itinerary_locations[]
   associated_loc_ids Float[]
   likes              likes[]
   enteredTags        String[]
 }
 
-model Itinerary_locations {
+model itinerary_locations {
   loc_id                  Float        @id
   loc_name                String
   creator_id              String
   associated_itinerary_id Float        @map("itinerary_id") // Renamed and mapped to 'itinerary_id'
-  itinerary               Itineraries? @relation(fields: [associated_itinerary_id], references: [itinerary_id]) // Updated relation with renamed field
+  itinerary               itineraries? @relation(fields: [associated_itinerary_id], references: [itinerary_id]) // Updated relation with renamed field
   loc_coords              Float[]
   loc_descr_en            String
   loc_descr_jp            String?
@@ -175,7 +175,7 @@ model likes {
   type          String
   createdAt     DateTime    @default(now())
   user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
-  itinerary     Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
 
   @@unique([firebase_uuid, itinerary_id])
 }
