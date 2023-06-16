@@ -1,12 +1,7 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
-
-interface LocationData {
-  loc_coords: [number, number];
-  loc_name: string;
-  loc_descr_en: string;
-  loc_tags: string[];
-}
+import { Itineraries, Itinerary_locations } from "@prisma/client";
+import { LocationData } from "../../globals";
 
 //GET
 // Return itineraries by search option
@@ -83,16 +78,17 @@ export async function fetchItineraryByName(name: string) {
   return itineraryByName;
 }
 
-// //Return itinerary by Itinerary ID
-// export async function fetchItineraryByID(id: number) {
-//   const itineraryByItineraryID = await prisma.itineraries.findFirst({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
+//Return itinerary by Itinerary ID
+export async function fetchItineraryByItineraryID(itinerary_id: number) {
+    console.log(itinerary_id);
+  const itineraryByItineraryID = await prisma.itineraries.findFirst({
+    where: {
+      itinerary_id: itinerary_id,
+    },
+  });
 
-//   return itineraryByItineraryID;
-// }
+  return itineraryByItineraryID;
+}
 
 //Return itinerary by Creator ID
 // export async function fetchItineraryByCreatorID(id: number) {
@@ -160,17 +156,17 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //     return itineraryLocationsByName?.location_ids;
 // }
 
-// //Return itinerary locations by Itinerary ID
-// export async function fetchLocationsByItineraryId (itineraryID: number) {
+//Return itinerary locations by Itinerary ID
+export async function fetchLocationsByItineraryId (itineraryID: number) {
 
-//     const itineraryLocationsByItineraryID = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_id: itineraryID
-//         }
-//     });
+    const itineraryLocationsByItineraryID = await prisma.itinerary_locations.findMany({
+        where: {
+            associated_itinerary_id: itineraryID
+        }
+    });
 
-//     return itineraryLocationsByItineraryID?.location_ids;
-// }
+    return itineraryLocationsByItineraryID;
+}
 
 // POST
 // Add new itinerary
@@ -192,56 +188,61 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 //   return newItinerary.itinerary_name;
 //   }
 
-export async function createItinerary(data: ItineraryData) {
-  const {
-    firebase_uuid,
-    itinerary_name,
-    itinerary_descr,
-    itinerary_tags,
-    locationData,
-  } = data;
+export async function createItinerary(itineraryData: ItineraryData, locationData?: LocationData[] | null) {
+  
 
-  console.log("Provided firebase_uuid:", firebase_uuid);
+  console.log("Provided firebase_uuid:", itineraryData.creator_id);
 
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
-      firebase_uuid,
-      itinerary_name,
-      itinerary_descr,
-      itinerary_tags,
+      itinerary_id: itineraryData.itinerary_id,
+      creator_id: itineraryData.creator_id,
+      itinerary_name: itineraryData.itinerary_name,
+      itinerary_descr_en: itineraryData.itinerary_descr_en,
+      itinerary_descr_jp: itineraryData.itinerary_descr_jp ? itineraryData.itinerary_descr_jp : "",
+      itinerary_tags: itineraryData.itinerary_tags,
     },
   });
 
   console.log("Created itinerary:", createdItinerary);
 
+  //Get location IDs from objects.
+  const itinerary_id: number = itineraryData.itinerary_id;
+  console.log("Itinerary_id: ", itinerary_id)
+
+  if (locationData != null) {
+  const location_ids: number[] = locationData.map((location: LocationData) => location.loc_id);
+  console.log("Location ids: ", location_ids)
   // Insert locations into the "locations" table
-  const createdLocations = await Promise.all(
+
+    await Promise.all(
     locationData.map(async (location: LocationData) => {
-      const createdLocation = await prisma.locations.create({
+        const createdLocation = await prisma.itinerary_locations.create({
         data: {
-          loc_name: location.loc_name,
-          loc_coords: location.loc_coords,
-          loc_descr_en: location.loc_descr_en,
-          loc_tags: [...location.loc_tags],
+            loc_id: location.loc_id,
+            loc_name: location.loc_name,
+            associated_itinerary_id: itinerary_id,
+            creator_id: location.creator_id,
+            loc_coords: location.loc_coords,
+            loc_descr_en: location.loc_descr_en,
+            loc_descr_jp: location.loc_descr_jp,
+            loc_tags: [...location.loc_tags],
         },
-      });
+        });
+        console.log("Created location:", createdLocation);
+        })
+    );
 
-      console.log("Created location:", createdLocation);
-
-      return createdLocation;
+  //Push location IDs to itinerary
+    await prisma.itineraries.update({
+        where: 
+        { itinerary_id: itinerary_id },
+        data: {
+            associated_loc_ids: location_ids
+        }
     })
-  );
-
-  // Insert itinerary_location records into the "itinerary_location" table
-  const itineraryLocationData = createdLocations.map((location) => ({
-    itinerary_id: createdItinerary.itinerary_id,
-    location_id: location.loc_id,
-  }));
-
-  await prisma.itinerary_location.createMany({
-    data: itineraryLocationData,
-  });
+  }
 
   console.log("Inserted itinerary_location records.");
 }
