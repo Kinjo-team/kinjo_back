@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { locations } from "@prisma/client";
+import { Itinerary_locations } from "@prisma/client";
 import {
   fetchAllLocations,
   //   fetchLocationByLocationID,

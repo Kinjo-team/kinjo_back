@@ -1,15 +1,15 @@
-import { locations } from "@prisma/client";
+import { Itinerary_locations } from "@prisma/client";
 import { prisma } from "../server";
 
 //GET
 //Returns all stored locations
 export async function fetchAllLocations() {
-  return await prisma.locations.findMany();
+  return await prisma.itinerary_locations.findMany();
 }
 
 //Get location by Location ID
 export async function fetchLocationByLocationID(id: number) {
-  const locationByID = await prisma.locations.findMany({
+  const locationByID = await prisma.itinerary_locations.findMany({
     where: {
       loc_id: id,
     },
@@ -32,7 +32,7 @@ export async function fetchLocationByLocationID(id: number) {
 
 // //Get location by name
 export async function fetchLocationsByLocationName(name: string) {
-  const locationByName = await prisma.locations.findMany({
+  const locationByName = await prisma.itinerary_locations.findMany({
     where: {
       loc_name: name,
     },
@@ -44,7 +44,7 @@ export async function fetchLocationsByLocationName(name: string) {
 //Return itinerary locations by Tags
 // export async function fetchLocationsByTags (tags: string[]) {
 
-//     const itineraryLocationsByTags = await prisma.locations.findMany({
+//     const itineraryLocationsByTags = await prisma.itinerary_locations.findMany({
 //         where: {
 //             loc_tags: {
 //                 hasSome: tags}
@@ -86,7 +86,7 @@ export async function fetchLocationsByLocationName(name: string) {
 
 // Prisma.create function for Itinerary_locations table
 // export const createItineraryLocation = async (location: locations) => {
-//   const itineraryLocation = await prisma.locations.create({
+//   const itineraryLocation = await prisma.itinerary_locations.create({
 //     data: {
 // creator_id: location.creator_id,
 // loc_name: location.loc_name,
@@ -107,7 +107,7 @@ export async function fetchLocationsByLocationName(name: string) {
 
 //   //PATCH
 // export const updateItineraryLocation = async (location: locations) => {
-//   const itineraryLocation = await prisma.locations.update({
+//   const itineraryLocation = await prisma.itinerary_locations.update({
 //     where: {
 //       loc_id: location.loc_id,
 //     },
@@ -134,7 +134,7 @@ export async function fetchLocationsByLocationName(name: string) {
 //Delete itinerary by ID
 // export async function deleteLocationsByItineraryID(locationID: number) {
 // const { loc_id } = location;
-//   const deleteItinerary = await prisma.locations.delete({
+//   const deleteItinerary = await prisma.itinerary_locations.delete({
 //     where: {
 //       loc_id: locationID,
 //     },

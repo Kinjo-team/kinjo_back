@@ -3,13 +3,13 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
-const translateText = require("./utils/translateFunc.js");
-const detectLanguage = require("./utils/detectLangFunc.js");
+import { translateText } from "./controllers/translate_controller";
 
 import {
   searchItineraries,
   getAllItineraries,
   getItineraryByName,
+  getItineraryByItineraryID,
   // getItineraryByID,
   // getItineraryByCreatorID,
   getItinerariesWithTags,
@@ -79,33 +79,9 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
+
 // app.get("/itineraries/id/:id", validateID, getItineraryByID);
-app.get("/itineraries/id/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const itinerary = await prisma.itineraries.findUnique({
-      where: {
-        itinerary_id: parseInt(id),
-      },
-      include: {
-        itinerary_locations: {
-          include: {
-            location: true,
-          },
-        },
-      },
-    });
-
-    if (!itinerary) {
-      return res.status(404).send("Itinerary not found");
-    }
-
-    return res.json(itinerary);
-  } catch (error) {
-    return res.status(500).json({ error: "Something went wrong" });
-  }
-});
+app.get("/itineraries/id/:id", getItineraryByItineraryID);
 
 // app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);
@@ -141,13 +117,7 @@ app.get("/likes/total/:itinerary_id", fetchTotalLikes(prisma));
 app.post("/likes", addLikes);
 
 // translate
-app.post("/translate", async (req, res) => {
-  const text = req.body.text;
-  const detected = await detectLanguage(text);
-  console.log(detected);
-  const translated = await translateText(text);
-  res.send(translated);
-});
+app.post("/translate", translateText);
 
 // //Listen
 app.listen(PORT, () => {
