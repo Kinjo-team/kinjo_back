@@ -136,20 +136,24 @@ datasource db {
 
 model users {
   user_id       Int      @id @default(autoincrement())
-  firebase_uuid  String   @unique
+  firebase_uuid String   @unique
   username      String   @unique
   user_email    String   @unique
-  // itineraries   itineraries[]
+  itineraries   itineraries[]
+  likes         likes[]
+  bookmarks     bookmarks[]
 }
 
 model itineraries {
   itinerary_id    Int               @id @default(autoincrement())
-  user_id         Int?
+  firebase_uuid   String
   itinerary_name  String           @unique
   itinerary_descr String
   itinerary_tags  String[]
-  // user            users?            @relation(fields: [user_id], references: [user_id])
+  user            users?            @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary_locations itinerary_location[]
+  likes           likes[]
+  bookmarks       bookmarks[]
 }
 
 model locations {
@@ -167,4 +171,28 @@ model itinerary_location {
   location_id     Int
   itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
   location        locations        @relation(fields: [location_id], references: [loc_id])
+}
+
+model likes {
+  id              Int               @id @default(autoincrement())
+  firebase_uuid   String
+  itinerary_id    Int
+  value           Int
+  type            String
+  createdAt       DateTime          @default(now())
+  user            users             @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
+
+  @@unique([firebase_uuid, itinerary_id])
+}
+
+model bookmarks {
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Int
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+
+  @@unique([firebase_uuid, itinerary_id])
 }

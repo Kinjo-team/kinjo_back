@@ -15,10 +15,21 @@ export async function addNewUser(user: FirebaseUser) {
   return newUser;
 }
 
+// Get user by firebase uid
 export async function getUserByFirebaseUUID(uid: string) {
   const user = await prisma.users.findUnique({
     where: {
       firebase_uuid: uid,
+    },
+  });
+  return user;
+}
+
+// Get user by username
+export async function getUserByUsername(username: string) {
+  const user = await prisma.users.findUnique({
+    where: {
+      username: username,
     },
   });
   return user;
