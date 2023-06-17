@@ -33,6 +33,12 @@ import {
 } from "./controllers/bookmarks_controller";
 
 import {
+  createComment,
+  deleteExistingComment,
+  getCommentsFromItinerary,
+} from "./controllers/comments_controller";
+
+import {
   validateName,
   validateID,
   validateDuration,
@@ -152,6 +158,11 @@ app.post("/translate", async (req, res) => {
 app.post("/bookmarks", createNewBookmark);
 app.delete("/bookmarks", deleteExistingBookmark);
 app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
+
+//comments_controller.ts
+app.post("/comments", createComment);
+app.delete("/comments/:commentId", deleteExistingComment);
+app.get("/comments/:itineraryId", getCommentsFromItinerary);
 
 
 // followers_controller.ts

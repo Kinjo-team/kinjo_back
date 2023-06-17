@@ -1,7 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
 generator client {
   provider = "prisma-client-js"
   output = "../node_modules/.prisma/client"
@@ -22,7 +21,7 @@ model users {
   bookmarks     bookmarks[]
   following     followers[] @relation("Following")
   followers     followers[] @relation("Followers")
-
+  comments      comments[]
 }
 
 model itineraries {
@@ -36,6 +35,7 @@ model itineraries {
   itinerary_locations itinerary_location[]
   likes           likes[]
   bookmarks       bookmarks[]
+  comments        comments[]
 }
 
 model locations {
@@ -87,4 +87,14 @@ model followers {
   following_id    String
 
   @@unique([follower_id, following_id])
+}
+
+model comments {
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Int
+  comment       String
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
 }
