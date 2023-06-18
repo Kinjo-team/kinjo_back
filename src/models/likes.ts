@@ -1,67 +1,89 @@
 import { prisma } from "../server";
 
 // Helper function to check if a user has already liked an itinerary
-async function hasUserLikedItinerary(firebase_uuid: any, itinerary_id: any) {
-  const existingLike = await prisma.likes.findFirst({
+async function checkLikeDislike(firebase_uuid: any, itinerary_id: any) {
+  const existingRecord = await prisma.likes.findUnique({
     where: {
-      firebase_uuid: firebase_uuid,
-      itinerary_id: itinerary_id,
+      firebase_uuid_itinerary_id: {
+        firebase_uuid: firebase_uuid,
+        itinerary_id: itinerary_id,
+      },
     },
   });
-  return existingLike !== null;
+
+  return existingRecord;
 }
 
-export async function createLikes(data: any) {
-  // Check if the user has already liked the itinerary
-  const userHasLiked = await hasUserLikedItinerary(
-    data.firebase_uuid,
-    data.itinerary_id
-  );
 
-  if (userHasLiked) {
-    // Return an error indicating that the user has already liked the itinerary
-    throw new Error("User has already liked this itinerary");
+// Create a new like record
+export async function createLike(firebase_uuid : string, itinerary_id :number) {
+  const existingRecord = await checkLikeDislike(firebase_uuid, itinerary_id);
+
+  if (existingRecord) {
+    throw new Error('User has already liked or disliked this itinerary');
   }
 
-  // If the user has not liked the itinerary, create a new like record
-  const likes = await prisma.likes.create({
+  const newLikeRecord = await prisma.likes.create({
     data: {
-      firebase_uuid: data.firebase_uuid,
-      itinerary_id: data.itinerary_id,
-      value: data.value,
-      type: data.type,
+      firebase_uuid: firebase_uuid,
+      itinerary_id: itinerary_id,
+      like: 1,  // Initial like count set to 1
+      dislike: 0  // Initial dislike count set to 0
     },
   });
 
-  return likes;
+  return newLikeRecord;
+}
+
+// Create a new dislike record
+export async function createDislike(firebase_uuid : string, itinerary_id :number) {
+  const existingRecord = await checkLikeDislike(firebase_uuid, itinerary_id);
+
+  if (existingRecord) {
+    throw new Error('User has already liked or disliked this itinerary');
+  }
+
+  const newDislikeRecord = await prisma.likes.create({
+    data: {
+      firebase_uuid: firebase_uuid,
+      itinerary_id: itinerary_id,
+      like: 0,  // Initial like count set to 0
+      dislike: 1  // Initial dislike count set to 1
+    },
+  });
+
+  return newDislikeRecord;
 }
 
 // Calculate the total sum of all likes for a given itinerary
-export async function getTotalLikes(
-  prisma: any,
-  itinerary_id: any,
-  type: string
-) {
-  console.log(
-    "getTotalLikes called with itinerary_id:",
-    itinerary_id,
-    "and type",
-    type
-  );
-  try {
-    const totalLikes = await prisma.likes.aggregate({
-      where: {
-        itinerary_id: itinerary_id,
-        type: type,
-      },
-      _sum: {
-        value: true,
-      },
-    });
-    console.log("Total likes fetched:", totalLikes);
-    return totalLikes._sum.value;
-  } catch (error) {
-    console.error("Error in getTotalLikes aggregation query:", error);
-    throw error;
+export async function getTotalLikesForItinerary(itineraryId : any) {
+  const itinerary = await prisma.itineraries.findUnique({
+    where: { itinerary_id: itineraryId },
+    include: { likes: true }, // Include the 'likes' relation
+  });
+
+  if (!itinerary) {
+    throw new Error('Itinerary not found');
   }
+
+  const totalLikes = itinerary.likes.reduce((sum, like) => sum + like.like, 0);
+
+  return totalLikes;
 }
+
+// Calculate the total sum of all dislikes for a given itinerary
+export async function getTotalLikesAndDislikesForItinerary(itineraryId: any) {
+  const itinerary = await prisma.itineraries.findUnique({
+    where: { itinerary_id: itineraryId },
+    include: { likes: true }, // Include the 'likes' relation
+  });
+
+  if (!itinerary) {
+    throw new Error('Itinerary not found');
+  }
+
+  const totalDislikes = itinerary.likes.reduce((sum, like) => sum + like.dislike, 0);
+
+  return  totalDislikes;
+}
+

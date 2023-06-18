@@ -83,6 +83,18 @@ export async function fetchItineraryByName(name: string) {
   return itineraryByName;
 }
 
+// Return itineraries from a specific user
+export async function fetchItinerariesByFirebaseID(firebase_id: string) {
+  const itinerariesByUser = await prisma.itineraries.findMany({
+    where: {
+      user: {
+        firebase_uuid: firebase_id,
+      },
+    },
+  });
+  return itinerariesByUser;
+};
+
 // //Return itinerary by Itinerary ID
 // export async function fetchItineraryByID(id: number) {
 //   const itineraryByItineraryID = await prisma.itineraries.findFirst({

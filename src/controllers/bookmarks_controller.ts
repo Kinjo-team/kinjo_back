@@ -3,8 +3,10 @@ import { addBookmark, deleteBookmark, getAllBookmarksFromUser } from "../models/
 
 export const createNewBookmark = async (req: Request, res: Response) => {
     const bookmark = req.body;
+
     try {
         const newBookmark = await addBookmark(bookmark.firebase_uuid, bookmark.itinerary_id);
+        console.log(newBookmark)
         res.status(201).json(newBookmark);
     } catch (error) {
         console.log(error);
