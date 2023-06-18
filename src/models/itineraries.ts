@@ -1,8 +1,72 @@
-import { itineraries, locations } from "@prisma/client";
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 
+interface LocationData {
+  loc_coords: [number, number];
+  loc_name: string;
+  loc_descr_en: string;
+  loc_tags: string[];
+}
+
 //GET
+// Return itineraries by search option
+export async function fetchItinerariesBySearchOption(option: string, value: string) {
+    let itineraries: any[] = [];
+    value = value.toLowerCase();
+
+    if (option === "Name") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_name: { 
+                  contains: value,
+                  mode: "insensitive",
+                },
+            },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+        });
+    } else if (option === "Tag") {
+        const tags = value.split(' ').map(tag => tag.trim());
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                itinerary_tags: {
+                  hasEvery: tags,
+                },
+            },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+        });
+    } else if (option === "User") {
+        itineraries = await prisma.itineraries.findMany({
+            where: {
+                user: {
+                    username: {
+                      contains: value,
+                    },
+                },
+            },
+            include: {
+              user: {
+                select: {
+                  username: true,
+                },
+              },
+            },
+        });
+    }
+    return itineraries;
+}
+
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
   return await prisma.itineraries.findMany();
@@ -19,27 +83,39 @@ export async function fetchItineraryByName(name: string) {
   return itineraryByName;
 }
 
-// //Return itinerary by Itinerary ID
-export async function fetchItineraryByID(id: number) {
-  const itineraryByItineraryID = await prisma.itineraries.findFirst({
+// Return itineraries from a specific user
+export async function fetchItinerariesByFirebaseID(firebase_id: string) {
+  const itinerariesByUser = await prisma.itineraries.findMany({
     where: {
-      itinerary_id: id,
+      user: {
+        firebase_uuid: firebase_id,
+      },
     },
   });
+  return itinerariesByUser;
+};
 
-  return itineraryByItineraryID;
-}
+// //Return itinerary by Itinerary ID
+// export async function fetchItineraryByID(id: number) {
+//   const itineraryByItineraryID = await prisma.itineraries.findFirst({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   return itineraryByItineraryID;
+// }
 
 //Return itinerary by Creator ID
-export async function fetchItineraryByCreatorID(id: number) {
-  const itineraryByCreatorID = await prisma.itineraries.findFirst({
-    where: {
-      user_id: id,
-    },
-  });
+// export async function fetchItineraryByCreatorID(id: number) {
+//   const itineraryByCreatorID = await prisma.itineraries.findFirst({
+//     where: {
+//       user_id: id,
+//     },
+//   });
 
-  return itineraryByCreatorID;
-}
+//   return itineraryByCreatorID;
+// }
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -130,46 +206,56 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 
 export async function createItinerary(data: ItineraryData) {
   const {
+    firebase_uuid,
     itinerary_name,
     itinerary_descr,
     itinerary_tags,
-    // user_id,
     locationData,
   } = data;
+
+  console.log("Provided firebase_uuid:", firebase_uuid);
 
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
+      firebase_uuid,
       itinerary_name,
       itinerary_descr,
       itinerary_tags,
-      // user_id,
     },
   });
 
   console.log("Created itinerary:", createdItinerary);
-  console.log("Location data:", locationData);
 
-  // Insert location into the "locations" table
-  const createdLocation = await prisma.locations.create({
-    data: {
-      loc_name: locationData.loc_name,
-      loc_coords: locationData.loc_coords,
-      loc_descr_en: locationData.loc_descr_en,
-      loc_tags: [...locationData.loc_tags],
-    },
+  // Insert locations into the "locations" table
+  const createdLocations = await Promise.all(
+    locationData.map(async (location: LocationData) => {
+      const createdLocation = await prisma.locations.create({
+        data: {
+          loc_name: location.loc_name,
+          loc_coords: location.loc_coords,
+          loc_descr_en: location.loc_descr_en,
+          loc_tags: [...location.loc_tags],
+        },
+      });
+
+      console.log("Created location:", createdLocation);
+
+      return createdLocation;
+    })
+  );
+
+  // Insert itinerary_location records into the "itinerary_location" table
+  const itineraryLocationData = createdLocations.map((location) => ({
+    itinerary_id: createdItinerary.itinerary_id,
+    location_id: location.loc_id,
+  }));
+
+  await prisma.itinerary_location.createMany({
+    data: itineraryLocationData,
   });
 
-  console.log("Created location:", createdLocation);
-
-  // Insert itinerary_location record into the "itinerary_location" table
-  await prisma.itinerary_location.create({
-    data: {
-      itinerary_id: createdItinerary.itinerary_id,
-      location_id: createdLocation.loc_id,
-    },
-  });
-  console.log("Inserted itinerary_location record.");
+  console.log("Inserted itinerary_location records.");
 }
 
 //PATCH

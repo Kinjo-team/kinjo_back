@@ -12,144 +12,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model users {
-//   user_id                        Int                   @id @default(autoincrement())
-//   firebase_uuid                  String                @unique
-//   username                       String                @unique
-//   first_name                     String?
-//   last_name                      String?
-//   user_email                     String                @unique
-//   access_token                   String?
-//   affiliation                    String?
-//   badges                         badge[]
-//   karma                          Int?
-//   blue_badge                     Boolean?
-//   itineraries                    itineraries[]
-//   itinerary_rating               itinerary_rating[]
-//   itinerary_locations            location[]
-//   location_rating                location_rating[]
-//   // Itinerary_sharing               Itinerary_sharing[]
-//   // Itinerary_sharing               Itinerary_sharing?    @relation(fields: [itinerary_sharingSharer_user_id], references: [sharer_user_id])
-//   // itinerary_sharingSharer_user_id Int?
-//   // Location_sharing                Location_sharing[]
-//   // Location_sharing                Location_sharing?     @relation(fields: [location_sharingSharer_user_id], references: [sharer_user_id])
-//   location_sharingSharer_user_id Int?
-// }
-
-// model itineraries {
-//   itinerary_id       Int                @id @default(autoincrement())
-//   creator            users?              @relation(fields: [creator_id], references: [user_id])
-//   creator_id         Int?
-//   itinerary_name     String             @unique
-//   itinerary_descr_en String 
-//   itinerary_tags     String[]
-//   itinerary_duration Int?
-//   ratings            itinerary_rating[]
-//   // Itinerary_sharing  Itinerary_sharing[]
-// }
-
-// model itinerary_locations {
-//   itinerary_id  Int  @relation(fields)
-//   location_id        Int
-// }
-
-// model location {
-//   loc_id           Int                @id @default(autoincrement())
-//   creator          users?              @relation(fields: [creator_id], references: [user_id])
-//   creator_id       Int?
-//   loc_name         String
-//   loc_coords       Float[]
-//   loc_address      String?
-//   loc_duration     Int?
-//   loc_descr_en     String?
-//   loc_descr_jp     String?
-//   loc_imgUrls      String[]
-//   loc_tags         String[]
-//   ratings          location_rating[]
-//   // business_listing business_listing[]
-//   // Location_sharing Location_sharing[]
-// }
-
-// model itinerary_rating {
-//   itinerary_id            Int          @id
-//   rating                  Int?
-//   user                    users        @relation(fields: [user_id], references: [user_id])
-//   user_id                 Int
-//   iterinary_comments_en   String?
-//   itinerary_comments_jp   String?
-//   itineraries             itineraries? @relation(fields: [itinerariesItinerary_id], references: [itinerary_id])
-//   itinerariesItinerary_id Int?
-// }
-
-// model location_rating {
-//   loc_id                    Int                  @id
-//   user                      users                @relation(fields: [user_id], references: [user_id])
-//   user_id                   Int
-//   loc_rating                Int?
-//   loc_comments_en           String?
-//   loc_comments_jp           String?
-//   itinerary_locations       location? @relation(fields: [itinerary_locationsLoc_id], references: [loc_id])
-//   itinerary_locationsLoc_id Int?
-// }
-
-// model badge {
-//   badge_id   Int     @id @default(autoincrement())
-//   badge_name String  @unique
-//   badge_desc String
-//   badge_img  String
-//   users      users[]
-// }
-
-// model business_listing {
-//   biz_id        Int                  @id @default(autoincrement())
-//   biz_name      String
-//   biz_email     String
-//   biz_address   String
-//   biz_poc_first String
-//   biz_poc_last  String
-//   biz_desc      String
-//   loc_id        Int?
-//   biz_lat       Float
-//   biz_long      Float
-//   biz_coords    Float[]
-//   location      location? @relation(fields: [loc_id], references: [loc_id])
-// }
-
-// model Itinerary_sharing {
-//   sharer_user_id  Int         @id
-//   itinerary_id    Int
-//   shared_with_ids Int[]
-//   sharer          Users       @relation(fields: [sharer_user_id], references: [user_id])
-//   itinerary       Itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
-//   shared_with     Users[]     @relation("SharedWith")
-// }
-
-// model Location_sharing {
-//   sharer_user_id  Int                 @id
-//   location_id     Int
-//   shared_with_ids Int[]
-//   sharer          Users               @relation(fields: [sharer_user_id], references: [user_id])
-//   location        Itinerary_locations @relation(fields: [location_id], references: [loc_id])
-//   shared_with     Users[]             @relation("SharedWith")
-// }
-
-
 model users {
   user_id       Int      @id @default(autoincrement())
-  firebase_uuid  String   @unique
+  firebase_uuid String   @unique
   username      String   @unique
   user_email    String   @unique
-  // itineraries   itineraries[]
+  itineraries   itineraries[]
+  likes         likes[]
+  bookmarks     bookmarks[]
+  following     followers[] @relation("Following")
+  followers     followers[] @relation("Followers")
+
 }
 
 model itineraries {
   itinerary_id    Int               @id @default(autoincrement())
-  user_id         Int?
+  firebase_uuid   String
   itinerary_name  String           @unique
   itinerary_descr String
   itinerary_tags  String[]
-  // user            users?            @relation(fields: [user_id], references: [user_id])
+  user            users?            @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary_locations itinerary_location[]
+  likes           likes[]
+  bookmarks       bookmarks[]
 }
 
 model locations {
@@ -167,4 +52,38 @@ model itinerary_location {
   location_id     Int
   itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
   location        locations        @relation(fields: [location_id], references: [loc_id])
+}
+
+model likes {
+  id              Int               @id @default(autoincrement())
+  firebase_uuid   String
+  itinerary_id    Int
+  like            Int               @default(0)
+  dislike         Int               @default(0)
+  createdAt       DateTime          @default(now())
+  user            users             @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
+
+  @@unique([firebase_uuid, itinerary_id])
+}
+
+model bookmarks {
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Int
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+
+  @@unique([firebase_uuid, itinerary_id])
+}
+
+model followers {
+  id              Int      @id @default(autoincrement())
+  follower        users    @relation("Following", fields: [follower_id], references: [firebase_uuid])
+  following       users    @relation("Followers", fields: [following_id], references: [firebase_uuid])
+  follower_id     String
+  following_id    String
+
+  @@unique([follower_id, following_id])
 }
