@@ -30,14 +30,8 @@ export async function getComments(itineraryId: number) {
         where: {
             itinerary_id: itineraryId,
         },
-        select: {
-            comment: true,
-            createdAt: true,
-            user: {
-                select: {
-                    username: true,
-                }
-            }
+        include: { 
+            user: true,
         },
     });
     return comments;
