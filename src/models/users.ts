@@ -1,5 +1,4 @@
 import { prisma } from "../server";
-import { users } from "@prisma/client";
 import { FirebaseUser } from "../../globals";
 
 //Add new firebase signup to database
@@ -33,6 +32,31 @@ export async function getUserByUsername(username: string) {
     },
   });
   return user;
+}
+
+//Change username of user
+export async function changeUsername(uid: string, newUsername: string) {
+  // Check if the new username already exists
+  const existingUser = await prisma.users.findFirst({
+    where: {
+      username: newUsername,
+    },
+  });
+
+  if (existingUser) {
+    throw new Error('Username already exists');
+  }
+
+  // Update the username if it doesn't exist already
+  const updatedUser = await prisma.users.update({
+    where: {
+      firebase_uuid: uid,
+    },
+    data: {
+      username: newUsername,
+    },
+  });
+  return updatedUser;
 }
 
 //Delete user from database

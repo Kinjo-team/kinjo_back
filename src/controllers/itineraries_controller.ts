@@ -7,11 +7,12 @@ import {
   // fetchItineraryByID,
   // fetchItineraryByCreatorID,
   fetchItinerariesWithTags,
+  fetchItinerariesByFirebaseID,
   //   fetchItinerariesWithDurationGreaterThan,
   //   fetchItinerariesWithDurationLessThan,
   //   fetchLocationsByItineraryName,
   //   fetchLocationsByItineraryId,
-  
+  //   fetchLocationsByCreatorID,
   createItinerary,
   //   modifyItinerary,
   //   deleteItineraryByName,
@@ -72,6 +73,22 @@ export const getItineraryByName = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: "An error occurred while fetching the itinerary." });
+  }
+};
+
+export const getItinerariesByFirebaseID = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const itineraries : any = await fetchItinerariesByFirebaseID(id);
+    if (itineraries) {
+      res.status(200).json(itineraries);
+    } else {
+      res.status(404).json({ message: "Itineraries not found." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the itineraries." });
   }
 };
 

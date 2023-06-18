@@ -1,32 +1,46 @@
 import { Request, Response } from "express";
-import { createLikes, getTotalLikes } from "../models/likes";
-
-import { validationResult } from "express-validator";
+import { createLike, createDislike, getTotalLikesForItinerary,getTotalLikesAndDislikesForItinerary } from "../models/likes";
 
 export const addLikes = async (req: Request, res: Response) => {
+
+  const { itinerary_id, firebase_uuid } = req.body;
   try {
-    await createLikes(req.body);
-    res.json({ message: "Likes added successfully." });
+    const likes = await createLike( firebase_uuid, Number(itinerary_id), );
+    res.status(200).json(likes);
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "An error occurred while adding likes." });
   }
-};
+}
 
-export const fetchTotalLikes =
-  (prisma: any) => async (req: Request, res: Response) => {
-    try {
-      const itinerary_id = parseInt(req.params.itinerary_id, 10);
-      console.log("fetchTotalLikes called with itinerary_id:", itinerary_id);
-      const totalLikes = await getTotalLikes(prisma, itinerary_id, "like");
-      const totalDislikes = await getTotalLikes(
-        prisma,
-        itinerary_id,
-        "dislike"
-      );
-      res.json({ totalLikes: totalLikes, totalDislikes: totalDislikes });
-    } catch (error) {
-      res
-        .status(500)
-        .json({ error: "An error occurred while fetching total likes." });
-    }
-  };
+export const addDislikes = async (req: Request, res: Response) => {
+  const { itinerary_id, firebase_uuid } = req.body;
+
+  try {
+    const dislikes = await createDislike( firebase_uuid, Number(itinerary_id), );
+    res.status(200).json(dislikes);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while adding dislikes." });
+  }
+}
+
+export const getLikesForItinerary = async (req: Request, res: Response) => {
+  const { id } = req.params
+  try {
+    const likes = await getTotalLikesForItinerary(Number(id));
+    res.status(200).json(likes);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "An error occurred while fetching likes." });
+  }
+}
+
+export const getLikesAndDislikesForItinerary = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const likes = await getTotalLikesAndDislikesForItinerary(Number(id));
+    res.status(200).json(likes);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while fetching likes." });
+  }
+}
