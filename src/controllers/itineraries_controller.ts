@@ -14,6 +14,7 @@ import {
   //   fetchLocationsByItineraryId,
   //   fetchLocationsByCreatorID,
   createItinerary,
+  fetchNearbyItineraries,
   //   modifyItinerary,
   //   deleteItineraryByName,
   //   deleteItineraryByItineraryID,
@@ -32,7 +33,7 @@ export const searchItineraries = async (req: Request, res: Response) => {
 
   try {
     const itineraries = await fetchItinerariesBySearchOption(option, value);
-    console.log(itineraries)
+    console.log(itineraries);
     res.setHeader("Content-Type", "application/json");
     res.status(200).json(itineraries);
   } catch (error) {
@@ -229,6 +230,19 @@ export const addItinerary = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getNearbyItineraries = async (req: Request, res: Response) => {
+  const { lat, lon } = req.body;
+  try {
+    const itineraries = await fetchNearbyItineraries(lat, lon);
+
+    res.status(200).json(itineraries);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching itineraries." });
   }
 };
 

@@ -17,5 +17,6 @@ interface ItineraryData {
   itinerary_name: string;
   itinerary_descr: string;
   itinerary_tags: string;
+  kinjo_coords: [number, number];
   locationData: any;
 }

@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
+import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
@@ -13,6 +14,11 @@ import {
   getItinerariesByFirebaseID,
   getItinerariesWithTags,
   addItinerary,
+  getNearbyItineraries,
+  //   updateItinerary,
+  //   delItineraryByName,
+  //   delItineraryByItineraryID,
+  //   delItineraryByCreatorID,
 } from "./controllers/itineraries_controller";
 
 import {
@@ -23,9 +29,8 @@ import {
 import {
   createNewBookmark,
   deleteExistingBookmark,
-  getAllBookmarksFromUserByID
+  getAllBookmarksFromUserByID,
 } from "./controllers/bookmarks_controller";
-
 
 import {
   validateName,
@@ -106,6 +111,11 @@ app.get("/itineraries/id/:id", async (req, res) => {
 });
 app.get("/itineraries/tags", getItinerariesWithTags);
 app.post("/itineraries", addItinerary);
+app.post("/itineraries/nearby", getNearbyItineraries);
+// app.patch('/itineraries', updateItinerary);
+// app.delete('/itineraries/name/:name', validateName, delItineraryByName);
+// app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
+// app.delete('/itineraries/creator/:id', validateID, delItineraryByCreatorID);
 
 
 // locations_controller.ts
@@ -142,6 +152,7 @@ app.post("/translate", async (req, res) => {
 app.post("/bookmarks", createNewBookmark);
 app.delete("/bookmarks", deleteExistingBookmark);
 app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
+
 
 // followers_controller.ts
 // followers
