@@ -9,6 +9,9 @@ export async function addComment(userID: string, itineraryID: number, comment: s
             comment: comment,
             createdAt: createdAt,
         },
+        include: {
+            user: true,
+        }
     });
     return newComment;
 };
