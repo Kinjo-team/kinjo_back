@@ -11,13 +11,8 @@ import {
   searchItineraries,
   getAllItineraries,
   getItineraryByName,
-  // getItineraryByID,
-  // getItineraryByCreatorID,
+  getItinerariesByFirebaseID,
   getItinerariesWithTags,
-  //   getItinerariesWithDurationGreaterThan,
-  //   getItinerariesWithDurationLessThan,
-  //   getLocationsByItineraryName,
-  //   getLocationsByItineraryId,
   addItinerary,
   getNearbyItineraries,
   //   updateItinerary,
@@ -28,16 +23,7 @@ import {
 
 import {
   getAllLocations,
-  //   getLocationByLocationID,
-  //   getLocationsByCreatorID,
   getLocationsByLocationName,
-  //   getLocationsByTags,
-  //   getLocationsWithDurationGreaterThan,
-  //   getLocationsWithDurationLessThan,
-  // addLocation,
-  // updateLocation,
-  // deleteLocByLocID,
-  //   deleteLocsByCreatorID,
 } from "./controllers/locations_controller";
 
 import {
@@ -57,9 +43,18 @@ import {
   deleteExistingUser,
   getUserByUUID,
   getUserByName,
+  patchUsernameByName
 } from "./controllers/users_controller";
 
-import { addLikes, fetchTotalLikes } from "./controllers/likes_controller";
+import {
+  getAllFollowersFromUserByID,
+  getAllFollowingFromUserByID,
+  createNewFollower,
+  deleteExistingFollow,
+  checkIfUserIsFollowingByID
+} from "./controllers/followers_controller";
+
+import { addLikes, addDislikes, getLikesForItinerary, getLikesAndDislikesForItinerary} from "./controllers/likes_controller";
 
 dotenv.config();
 
@@ -87,7 +82,7 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
-// app.get("/itineraries/id/:id", validateID, getItineraryByID);
+app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
 app.get("/itineraries/id/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -114,11 +109,7 @@ app.get("/itineraries/id/:id", async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 });
-
-// app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);
-// app.get('/itineraries/duration/greater/:duration', validateDuration, getItinerariesWithDurationGreaterThan); //FIX
-// app.get('/itineraries/duration/less/:duration', validateDuration, getItinerariesWithDurationLessThan); //FIX
 app.post("/itineraries", addItinerary);
 app.post("/itineraries/nearby", getNearbyItineraries);
 // app.patch('/itineraries', updateItinerary);
@@ -126,28 +117,27 @@ app.post("/itineraries/nearby", getNearbyItineraries);
 // app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
 // app.delete('/itineraries/creator/:id', validateID, delItineraryByCreatorID);
 
+
 // locations_controller.ts
 app.get("/locations", getAllLocations);
-// app.get('/locations/id/:id', validateID, getLocationsByItineraryId);
-// app.get('/locations/creator/:id', validateID, getLocationsByCreatorID);
 app.get("/locations/name/:name", validateName, getLocationsByLocationName);
-// app.get('/locations/tags', getLocationsByTags);
-// app.get('/locations/duration/greater/:duration', validateDuration, getLocationsWithDurationGreaterThan);
-// app.get('/locations/duration/less/:duration', validateDuration, getLocationsWithDurationLessThan);
-// app.post("/locations", addLocation);
-// app.patch("/locations", updateLocation);
-// app.delete("/locations/id/:id", validateID, deleteLocByLocID);
-// app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
+
 
 // users_controller.ts
 app.post("/users", createNewUser);
 app.get("/users/username/:username", getUserByName);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
+app.patch("/users/:newUsername", patchUsernameByName);
 
 //likes_controller.ts
-app.get("/likes/total/:itinerary_id", fetchTotalLikes(prisma));
+// likes
+app.get("/likes/:id", getLikesForItinerary);
 app.post("/likes", addLikes);
+
+// dislikes
+app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
+app.post("/dislikes", addDislikes);
 
 // translate
 app.post("/translate", async (req, res) => {
@@ -162,6 +152,16 @@ app.post("/translate", async (req, res) => {
 app.post("/bookmarks", createNewBookmark);
 app.delete("/bookmarks", deleteExistingBookmark);
 app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
+
+
+// followers_controller.ts
+// followers
+app.get("/followers/:uid", getAllFollowersFromUserByID);
+app.post("/followers", createNewFollower);
+app.delete("/followers", deleteExistingFollow);
+//following
+app.get("/following/:uid", getAllFollowingFromUserByID);
+app.post("/following/check", checkIfUserIsFollowingByID);
 
 // //Listen
 app.listen(PORT, () => {
