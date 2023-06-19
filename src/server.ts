@@ -5,8 +5,8 @@ import cors from "cors";
 import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
 // import { PrismaClient } from "../node_modules/.prisma/client";
 import { PrismaClient } from "@prisma/client";
-const translateText = require("./utils/translateFunc.js");
-const detectLanguage = require("./utils/detectLangFunc.js");
+// const translateText = require("./utils/translateFunc.js");
+// const detectLanguage = require("./utils/detectLangFunc.js");
 
 import {
   searchItineraries,
@@ -146,13 +146,13 @@ app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
 app.post("/dislikes", addDislikes);
 
 // translate
-app.post("/translate", async (req: Request, res: Response) => {
-  const text = req.body.text;
-  const detected = await detectLanguage(text);
-  console.log(detected);
-  const translated = await translateText(text);
-  res.send(translated);
-});
+// app.post("/translate", async (req: Request, res: Response) => {
+//   const text = req.body.text;
+//   const detected = await detectLanguage(text);
+//   console.log(detected);
+//   const translated = await translateText(text);
+//   res.send(translated);
+// });
 
 //bookmarks_controller.ts
 app.post("/bookmarks", createNewBookmark);
