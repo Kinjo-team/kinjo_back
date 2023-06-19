@@ -51,6 +51,16 @@ CREATE TABLE "likes" (
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "bookmarks" (
+    "id" SERIAL NOT NULL,
+    "firebase_uuid" TEXT NOT NULL,
+    "itinerary_id" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "bookmarks_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_firebase_uuid_key" ON "users"("firebase_uuid");
 
@@ -66,6 +76,9 @@ CREATE UNIQUE INDEX "itineraries_itinerary_name_key" ON "itineraries"("itinerary
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_firebase_uuid_itinerary_id_key" ON "likes"("firebase_uuid", "itinerary_id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "bookmarks_firebase_uuid_itinerary_id_key" ON "bookmarks"("firebase_uuid", "itinerary_id");
+
 -- AddForeignKey
 ALTER TABLE "itineraries" ADD CONSTRAINT "itineraries_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -80,3 +93,9 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_firebase_uuid_fkey" FOREIGN KEY ("fire
 
 -- AddForeignKey
 ALTER TABLE "likes" ADD CONSTRAINT "likes_itinerary_id_fkey" FOREIGN KEY ("itinerary_id") REFERENCES "itineraries"("itinerary_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_itinerary_id_fkey" FOREIGN KEY ("itinerary_id") REFERENCES "itineraries"("itinerary_id") ON DELETE RESTRICT ON UPDATE CASCADE;

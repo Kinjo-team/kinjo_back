@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
+import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
@@ -13,6 +14,8 @@ import {
   getItinerariesByFirebaseID,
   getItinerariesWithTags,
   addItinerary,
+  getNearbyItineraries,
+  getItinerariesByUsername
 } from "./controllers/itineraries_controller";
 
 import {
@@ -23,9 +26,14 @@ import {
 import {
   createNewBookmark,
   deleteExistingBookmark,
-  getAllBookmarksFromUserByID
+  getAllBookmarksFromUserByID,
 } from "./controllers/bookmarks_controller";
 
+import {
+  createComment,
+  deleteExistingComment,
+  getCommentsFromItinerary,
+} from "./controllers/comments_controller";
 
 import {
   validateName,
@@ -44,12 +52,18 @@ import {
 import {
   getAllFollowersFromUserByID,
   getAllFollowingFromUserByID,
+  getFollowerNumberByUsername,
+  getFollowingNumberByUsername,
   createNewFollower,
   deleteExistingFollow,
   checkIfUserIsFollowingByID
 } from "./controllers/followers_controller";
 
-import { addLikes, addDislikes, getLikesForItinerary, getLikesAndDislikesForItinerary} from "./controllers/likes_controller";
+import { addLikes,
+         addDislikes,
+        getLikesForItinerary, 
+        getLikesAndDislikesForItinerary
+} from "./controllers/likes_controller";
 
 dotenv.config();
 
@@ -105,8 +119,9 @@ app.get("/itineraries/id/:id", async (req, res) => {
   }
 });
 app.get("/itineraries/tags", getItinerariesWithTags);
+app.get("/itineraries/:username", getItinerariesByUsername)
 app.post("/itineraries", addItinerary);
-
+app.post("/itineraries/nearby", getNearbyItineraries);
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
@@ -143,13 +158,21 @@ app.post("/bookmarks", createNewBookmark);
 app.delete("/bookmarks", deleteExistingBookmark);
 app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
 
+//comments_controller.ts
+app.post("/comments", createComment);
+app.delete("/comments/:commentId", deleteExistingComment);
+app.get("/comments/:itineraryId", getCommentsFromItinerary);
+
+
 // followers_controller.ts
 // followers
 app.get("/followers/:uid", getAllFollowersFromUserByID);
+app.get("/followers/number/:username", getFollowerNumberByUsername);
 app.post("/followers", createNewFollower);
 app.delete("/followers", deleteExistingFollow);
 //following
 app.get("/following/:uid", getAllFollowingFromUserByID);
+app.get("/following/number/:username", getFollowingNumberByUsername);
 app.post("/following/check", checkIfUserIsFollowingByID);
 
 // //Listen
