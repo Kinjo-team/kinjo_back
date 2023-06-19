@@ -20,6 +20,8 @@ model users {
   likes         likes[]
   bookmarks     bookmarks[]
   comments      comments[]
+  following     followers[] @relation("Following")
+  followers     followers[] @relation("Followers")
 }
 
 model itineraries {
@@ -28,6 +30,7 @@ model itineraries {
   itinerary_name  String           @unique
   itinerary_descr String
   itinerary_tags  String[]
+  kinjo_coords    Float[]
   user            users?            @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary_locations itinerary_location[]
   likes           likes[]
@@ -56,8 +59,8 @@ model likes {
   id              Int               @id @default(autoincrement())
   firebase_uuid   String
   itinerary_id    Int
-  value           Int
-  type            String
+  like            Int               @default(0)
+  dislike         Int               @default(0)
   createdAt       DateTime          @default(now())
   user            users             @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary       itineraries       @relation(fields: [itinerary_id], references: [itinerary_id])
@@ -84,4 +87,14 @@ model comments {
   createdAt     DateTime    @default(now())
   user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
   itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+}
+
+model followers {
+  id              Int      @id @default(autoincrement())
+  follower        users    @relation("Following", fields: [follower_id], references: [firebase_uuid])
+  following       users    @relation("Followers", fields: [following_id], references: [firebase_uuid])
+  follower_id     String
+  following_id    String
+
+  @@unique([follower_id, following_id])
 }

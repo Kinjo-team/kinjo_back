@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
+import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
@@ -10,38 +11,22 @@ import {
   searchItineraries,
   getAllItineraries,
   getItineraryByName,
-  // getItineraryByID,
-  // getItineraryByCreatorID,
+  getItinerariesByFirebaseID,
   getItinerariesWithTags,
-  //   getItinerariesWithDurationGreaterThan,
-  //   getItinerariesWithDurationLessThan,
-  //   getLocationsByItineraryName,
-  //   getLocationsByItineraryId,
   addItinerary,
-  //   updateItinerary,
-  //   delItineraryByName,
-  //   delItineraryByItineraryID,
-  //   delItineraryByCreatorID,
+  getNearbyItineraries,
+  getItinerariesByUsername
 } from "./controllers/itineraries_controller";
 
 import {
   getAllLocations,
-  //   getLocationByLocationID,
-  //   getLocationsByCreatorID,
   getLocationsByLocationName,
-  //   getLocationsByTags,
-  //   getLocationsWithDurationGreaterThan,
-  //   getLocationsWithDurationLessThan,
-  // addLocation,
-  // updateLocation,
-  // deleteLocByLocID,
-  //   deleteLocsByCreatorID,
 } from "./controllers/locations_controller";
 
 import {
   createNewBookmark,
   deleteExistingBookmark,
-  getAllBookmarksFromUserByID
+  getAllBookmarksFromUserByID,
 } from "./controllers/bookmarks_controller";
 
 import {
@@ -60,10 +45,25 @@ import {
   createNewUser,
   deleteExistingUser,
   getUserByUUID,
-  getUserByName
+  getUserByName,
+  patchUsernameByName
 } from "./controllers/users_controller";
 
-import { addLikes, fetchTotalLikes } from "./controllers/likes_controller";
+import {
+  getAllFollowersFromUserByID,
+  getAllFollowingFromUserByID,
+  getFollowerNumberByUsername,
+  getFollowingNumberByUsername,
+  createNewFollower,
+  deleteExistingFollow,
+  checkIfUserIsFollowingByID
+} from "./controllers/followers_controller";
+
+import { addLikes,
+         addDislikes,
+        getLikesForItinerary, 
+        getLikesAndDislikesForItinerary
+} from "./controllers/likes_controller";
 
 dotenv.config();
 
@@ -91,7 +91,7 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
-// app.get("/itineraries/id/:id", validateID, getItineraryByID);
+app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
 app.get("/itineraries/id/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -118,39 +118,31 @@ app.get("/itineraries/id/:id", async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 });
-
-// app.get("/itineraries/creator/:id", validateID, getItineraryByCreatorID);
 app.get("/itineraries/tags", getItinerariesWithTags);
-// app.get('/itineraries/duration/greater/:duration', validateDuration, getItinerariesWithDurationGreaterThan); //FIX
-// app.get('/itineraries/duration/less/:duration', validateDuration, getItinerariesWithDurationLessThan); //FIX
+app.get("/itineraries/:username", getItinerariesByUsername)
 app.post("/itineraries", addItinerary);
-// app.patch('/itineraries', updateItinerary);
-// app.delete('/itineraries/name/:name', validateName, delItineraryByName);
-// app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
-// app.delete('/itineraries/creator/:id', validateID, delItineraryByCreatorID);
+app.post("/itineraries/nearby", getNearbyItineraries);
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
-// app.get('/locations/id/:id', validateID, getLocationsByItineraryId);
-// app.get('/locations/creator/:id', validateID, getLocationsByCreatorID);
 app.get("/locations/name/:name", validateName, getLocationsByLocationName);
-// app.get('/locations/tags', getLocationsByTags);
-// app.get('/locations/duration/greater/:duration', validateDuration, getLocationsWithDurationGreaterThan);
-// app.get('/locations/duration/less/:duration', validateDuration, getLocationsWithDurationLessThan);
-// app.post("/locations", addLocation);
-// app.patch("/locations", updateLocation);
-// app.delete("/locations/id/:id", validateID, deleteLocByLocID);
-// app.delete('/locations/creator/:id', validateID, deleteLocsByCreatorID);
+
 
 // users_controller.ts
 app.post("/users", createNewUser);
 app.get("/users/username/:username", getUserByName);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
+app.patch("/users/:newUsername", patchUsernameByName);
 
 //likes_controller.ts
-app.get("/likes/total/:itinerary_id", fetchTotalLikes(prisma));
+// likes
+app.get("/likes/:id", getLikesForItinerary);
 app.post("/likes", addLikes);
+
+// dislikes
+app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
+app.post("/dislikes", addDislikes);
 
 // translate
 app.post("/translate", async (req, res) => {
@@ -171,6 +163,17 @@ app.post("/comments", createComment);
 app.delete("/comments/:commentId", deleteExistingComment);
 app.get("/comments/:itineraryId", getCommentsFromItinerary);
 
+
+// followers_controller.ts
+// followers
+app.get("/followers/:uid", getAllFollowersFromUserByID);
+app.get("/followers/number/:username", getFollowerNumberByUsername);
+app.post("/followers", createNewFollower);
+app.delete("/followers", deleteExistingFollow);
+//following
+app.get("/following/:uid", getAllFollowingFromUserByID);
+app.get("/following/number/:username", getFollowingNumberByUsername);
+app.post("/following/check", checkIfUserIsFollowingByID);
 
 // //Listen
 app.listen(PORT, () => {
