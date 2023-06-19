@@ -99,27 +99,17 @@ export async function fetchItinerariesByFirebaseID(firebase_id: string) {
   return itinerariesByUser;
 };
 
-// //Return itinerary by Itinerary ID
-// export async function fetchItineraryByID(id: number) {
-//   const itineraryByItineraryID = await prisma.itineraries.findFirst({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   return itineraryByItineraryID;
-// }
-
-//Return itinerary by Creator ID
-// export async function fetchItineraryByCreatorID(id: number) {
-//   const itineraryByCreatorID = await prisma.itineraries.findFirst({
-//     where: {
-//       user_id: id,
-//     },
-//   });
-
-//   return itineraryByCreatorID;
-// }
+// Return itineraries from a specific user by username
+export async function fetchItinerariesByUsername(username: string) {
+  const itinerariesByUser = await prisma.itineraries.findMany({
+    where: {
+      user: {
+        username: username,
+      },
+    },
+  });
+  return itinerariesByUser;
+};
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -135,78 +125,6 @@ export async function fetchItinerariesWithTags(tags: string[]) {
     return itinerariesWithTag;
   }
 }
-
-// //Return itineraries with duration greater than
-// export async function fetchItinerariesWithDurationGreaterThan (duration: number) {
-
-//     const itinerariesWhereDuration = await prisma.itineraries.findMany({
-//         where: {
-//             itinerary_duration: {
-//                 gte: duration
-//             }
-//         }
-//     });
-
-//     return itinerariesWhereDuration;
-// }
-
-// //Return itineraries with duration less than
-// export async function fetchItinerariesWithDurationLessThan (duration: number) {
-
-//     const itinerariesWhereDuration = await prisma.itineraries.findMany({
-//         where: {
-//             itinerary_duration: {
-//                 lte: duration
-//             }
-//         }
-//     });
-
-//     return itinerariesWhereDuration;
-// }
-
-// //Return itinerary locations by Itinerary Name
-// export async function fetchLocationsByItineraryName (itineraryName: string) {
-
-//     const itineraryLocationsByName = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_name: itineraryName
-//         }
-//     });
-
-//     return itineraryLocationsByName?.location_ids;
-// }
-
-// //Return itinerary locations by Itinerary ID
-// export async function fetchLocationsByItineraryId (itineraryID: number) {
-
-//     const itineraryLocationsByItineraryID = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_id: itineraryID
-//         }
-//     });
-
-//     return itineraryLocationsByItineraryID?.location_ids;
-// }
-
-// POST
-// Add new itinerary
-// export async function createItinerary(itinerary: Itineraries) {
-
-//     const { creator_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
-
-//     const newItinerary = await prisma.itineraries.create ({
-//         data: {
-//             creator_id: creator_id,
-//             itinerary_name: itinerary_name,
-//             itinerary_tags: itinerary_tags,
-//             location_ids: location_ids,
-//             itinerary_duration: itinerary_duration
-
-//         }
-//     })
-
-//   return newItinerary.itinerary_name;
-//   }
 
 export async function createItinerary(data: ItineraryData) {
   const {
@@ -300,19 +218,6 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
 //     return modifiedItinerary;
 // }
 
-// //DELETE
-// //Delete itinerary by name
-// export async function deleteItineraryByName(itineraryName: string) {
-//     // const { itinerary_name } = itinerary;
-//     const deleteItinerary = await prisma.itineraries.delete({
-//         where: {
-//             itinerary_name: itineraryName,
-//         }
-//     });
-
-//     return deleteItinerary.itinerary_name;
-// }
-
 // //Delete itinerary by ID
 // export async function deleteItineraryByItineraryID(itineraryID: number) {
 //     // const { itinerary_id } = itinerary;
@@ -325,14 +230,4 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
 //     return deleteItinerary.itinerary_id;
 // }
 
-// //Delete itinerary by Creator ID
-// export async function deleteItineraryByCreatorID(creatorID: number) {
-//     // const { creator_id } = itinerary;
-//     const deleteItinerary = await prisma.itineraries.deleteMany({
-//         where: {
-//             creator_id: creatorID,
-//         }
-//     });
 
-//     return deleteItinerary.count;
-// }

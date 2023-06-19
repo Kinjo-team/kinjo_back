@@ -64,6 +64,32 @@ export async function checkIfUserIsFollowing(userID: string, followerID: string)
     return following;
 }
 
+// Get follower number from username
+export async function getFollowerNumber(username: string) {
+    const user = await prisma.users.findUnique({
+        where: {
+            username: username,
+        },
+        include: {
+            followers: true,
+        },
+        });
+    return user?.followers.length;
+}
+
+// Get following number from username
+export async function getFollowingNumber(username: string) {
+    const user = await prisma.users.findUnique({
+        where: {
+            username: username,
+        },
+        include: {
+            following: true,
+        },
+        });
+    return user?.following.length;
+}
+
 //Add follower
 export async function addFollower(userID: string, followerID: string) {
     const newFollower = await prisma.followers.create({

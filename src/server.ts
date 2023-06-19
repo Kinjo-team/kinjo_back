@@ -15,10 +15,7 @@ import {
   getItinerariesWithTags,
   addItinerary,
   getNearbyItineraries,
-  //   updateItinerary,
-  //   delItineraryByName,
-  //   delItineraryByItineraryID,
-  //   delItineraryByCreatorID,
+  getItinerariesByUsername
 } from "./controllers/itineraries_controller";
 
 import {
@@ -49,12 +46,18 @@ import {
 import {
   getAllFollowersFromUserByID,
   getAllFollowingFromUserByID,
+  getFollowerNumberByUsername,
+  getFollowingNumberByUsername,
   createNewFollower,
   deleteExistingFollow,
   checkIfUserIsFollowingByID
 } from "./controllers/followers_controller";
 
-import { addLikes, addDislikes, getLikesForItinerary, getLikesAndDislikesForItinerary} from "./controllers/likes_controller";
+import { addLikes,
+         addDislikes,
+        getLikesForItinerary, 
+        getLikesAndDislikesForItinerary
+} from "./controllers/likes_controller";
 
 dotenv.config();
 
@@ -110,13 +113,9 @@ app.get("/itineraries/id/:id", async (req, res) => {
   }
 });
 app.get("/itineraries/tags", getItinerariesWithTags);
+app.get("/itineraries/:username", getItinerariesByUsername)
 app.post("/itineraries", addItinerary);
 app.post("/itineraries/nearby", getNearbyItineraries);
-// app.patch('/itineraries', updateItinerary);
-// app.delete('/itineraries/name/:name', validateName, delItineraryByName);
-// app.delete('/itineraries/id/:id', validateID, delItineraryByItineraryID);
-// app.delete('/itineraries/creator/:id', validateID, delItineraryByCreatorID);
-
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
@@ -157,10 +156,12 @@ app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
 // followers_controller.ts
 // followers
 app.get("/followers/:uid", getAllFollowersFromUserByID);
+app.get("/followers/number/:username", getFollowerNumberByUsername);
 app.post("/followers", createNewFollower);
 app.delete("/followers", deleteExistingFollow);
 //following
 app.get("/following/:uid", getAllFollowingFromUserByID);
+app.get("/following/number/:username", getFollowingNumberByUsername);
 app.post("/following/check", checkIfUserIsFollowingByID);
 
 // //Listen
