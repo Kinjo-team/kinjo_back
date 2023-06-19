@@ -28,6 +28,9 @@ export async function getAllBookmarksFromUser(userID: string) {
         where: {
             firebase_uuid: userID,
         },
+        include: {
+          itinerary: true,
+        },
     });
     return bookmarks;
 }
