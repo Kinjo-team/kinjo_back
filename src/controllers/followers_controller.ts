@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { addFollower, deleteFollower, getFollowers, getFollowing, checkIfUserIsFollowing } from "../models/followers";
+import { addFollower, deleteFollower, getFollowers, getFollowing, getFollowerNumber, getFollowingNumber, checkIfUserIsFollowing } from "../models/followers";
 
 export const getAllFollowersFromUserByID = async (req: Request, res: Response) => {
     const {uid} = req.params;
@@ -21,6 +21,27 @@ export const getAllFollowingFromUserByID = async (req: Request, res: Response) =
         res.status(500).json({ error: "Unable to find following in database" });
     }
 }
+
+export const getFollowerNumberByUsername = async (req: Request, res: Response) => {
+    const {username} = req.params;
+    try {
+        const followerNumber = await getFollowerNumber(username);
+        res.status(200).json(followerNumber);
+    } catch (error) {
+        res.status(500).json({ error: "Unable to find follower number in database" });
+    }
+}
+
+export const getFollowingNumberByUsername = async (req: Request, res: Response) => {
+    const {username} = req.params;
+    try {
+        const followingNumber = await getFollowingNumber(username);
+        res.status(200).json(followingNumber);
+    } catch (error) {
+        res.status(500).json({ error: "Unable to find following number in database" });
+    }
+}
+
 
 export const createNewFollower = async (req: Request, res: Response) => {
     const {firebase_uid, follower_uid} = req.body;
