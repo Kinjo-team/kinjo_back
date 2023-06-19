@@ -85,9 +85,10 @@ app.use(express.json());
 app.use(cors());
 
 //Routes
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../public/", "index.html"));
-});
+// app.get("/", (req: Request, res: Response) => {
+//   res.sendFile(path.join(__dirname, "../public/", "index.html"));
+// });
+app.use(express.static("public"));
 
 // itineraries_controller.ts
 app.get("/search", searchItineraries);
