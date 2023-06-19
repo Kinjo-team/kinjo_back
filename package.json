@@ -7,7 +7,7 @@
     "dev": "nodemon ./src/server.ts",
     "dev-start": "ts-node ./src/server.ts",
     "start": "npx tsc && node ./dist/src/server.js",
-    "build": "tsc",
+    "build": "npm i",
     "postinstall": "tsc"
   },
   "author": "",
