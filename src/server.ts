@@ -3,7 +3,8 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
-import { PrismaClient } from "../node_modules/.prisma/client";
+// import { PrismaClient } from "../node_modules/.prisma/client";
+import { PrismaClient } from "@prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
 
