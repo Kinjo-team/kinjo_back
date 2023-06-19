@@ -93,7 +93,7 @@ app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
-app.get("/itineraries/id/:id", async (req: any, res: any) => {
+app.get("/itineraries/id/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -145,7 +145,7 @@ app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
 app.post("/dislikes", addDislikes);
 
 // translate
-app.post("/translate", async (req: any, res: any) => {
+app.post("/translate", async (req: Request, res: Response) => {
   const text = req.body.text;
   const detected = await detectLanguage(text);
   console.log(detected);
