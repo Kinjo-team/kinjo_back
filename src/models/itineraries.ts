@@ -1,5 +1,6 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
+import { getDistanceFromLatLonInKm } from "../utils/getDistanceFromLatLonInKm";
 
 interface LocationData {
   loc_coords: [number, number];
@@ -10,61 +11,64 @@ interface LocationData {
 
 //GET
 // Return itineraries by search option
-export async function fetchItinerariesBySearchOption(option: string, value: string) {
-    let itineraries: any[] = [];
-    value = value.toLowerCase();
+export async function fetchItinerariesBySearchOption(
+  option: string,
+  value: string
+) {
+  let itineraries: any[] = [];
+  value = value.toLowerCase();
 
-    if (option === "Name") {
-        itineraries = await prisma.itineraries.findMany({
-            where: {
-                itinerary_name: { 
-                  contains: value,
-                  mode: "insensitive",
-                },
-            },
-            include: {
-              user: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-        });
-    } else if (option === "Tag") {
-        const tags = value.split(' ').map(tag => tag.trim());
-        itineraries = await prisma.itineraries.findMany({
-            where: {
-                itinerary_tags: {
-                  hasEvery: tags,
-                },
-            },
-            include: {
-              user: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-        });
-    } else if (option === "User") {
-        itineraries = await prisma.itineraries.findMany({
-            where: {
-                user: {
-                    username: {
-                      contains: value,
-                    },
-                },
-            },
-            include: {
-              user: {
-                select: {
-                  username: true,
-                },
-              },
-            },
-        });
-    }
-    return itineraries;
+  if (option === "Name") {
+    itineraries = await prisma.itineraries.findMany({
+      where: {
+        itinerary_name: {
+          contains: value,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  } else if (option === "Tag") {
+    const tags = value.split(" ").map((tag) => tag.trim());
+    itineraries = await prisma.itineraries.findMany({
+      where: {
+        itinerary_tags: {
+          hasEvery: tags,
+        },
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  } else if (option === "User") {
+    itineraries = await prisma.itineraries.findMany({
+      where: {
+        user: {
+          username: {
+            contains: value,
+          },
+        },
+      },
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
+  return itineraries;
 }
 
 //Returns all stored itineraries
@@ -198,6 +202,7 @@ export async function createItinerary(data: ItineraryData) {
     itinerary_name,
     itinerary_descr,
     itinerary_tags,
+    kinjo_coords,
     locationData,
   } = data;
 
@@ -210,6 +215,7 @@ export async function createItinerary(data: ItineraryData) {
       itinerary_name,
       itinerary_descr,
       itinerary_tags,
+      kinjo_coords,
     },
   });
 
@@ -244,6 +250,20 @@ export async function createItinerary(data: ItineraryData) {
   });
 
   console.log("Inserted itinerary_location records.");
+}
+
+//Nearby locations
+
+export async function fetchNearbyItineraries(lat: number, lon: number) {
+  const itineraries = await prisma.itineraries.findMany();
+
+  const nearbyItineraries = itineraries.filter((itinerary) => {
+    const [itinLat, itinLon] = itinerary.kinjo_coords;
+    const distance = getDistanceFromLatLonInKm(lat, lon, itinLat, itinLon);
+    return distance <= 5;
+  });
+
+  return nearbyItineraries;
 }
 
 //PATCH
