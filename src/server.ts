@@ -15,7 +15,7 @@ import {
   getItinerariesWithTags,
   addItinerary,
   getNearbyItineraries,
-  getItinerariesByUsername
+  getItinerariesByUsername,
 } from "./controllers/itineraries_controller";
 
 import {
@@ -46,7 +46,7 @@ import {
   deleteExistingUser,
   getUserByUUID,
   getUserByName,
-  patchUsernameByName
+  patchUsernameByName,
 } from "./controllers/users_controller";
 
 import {
@@ -56,13 +56,14 @@ import {
   getFollowingNumberByUsername,
   createNewFollower,
   deleteExistingFollow,
-  checkIfUserIsFollowingByID
+  checkIfUserIsFollowingByID,
 } from "./controllers/followers_controller";
 
-import { addLikes,
-         addDislikes,
-        getLikesForItinerary, 
-        getLikesAndDislikesForItinerary
+import {
+  addLikes,
+  addDislikes,
+  getLikesForItinerary,
+  getLikesAndDislikesForItinerary,
 } from "./controllers/likes_controller";
 
 dotenv.config();
@@ -92,7 +93,7 @@ app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
-app.get("/itineraries/id/:id", async (req, res) => {
+app.get("/itineraries/id/:id", async (req: any, res: any) => {
   const { id } = req.params;
 
   try {
@@ -119,14 +120,13 @@ app.get("/itineraries/id/:id", async (req, res) => {
   }
 });
 app.get("/itineraries/tags", getItinerariesWithTags);
-app.get("/itineraries/:username", getItinerariesByUsername)
+app.get("/itineraries/:username", getItinerariesByUsername);
 app.post("/itineraries", addItinerary);
 app.post("/itineraries/nearby", getNearbyItineraries);
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
 app.get("/locations/name/:name", validateName, getLocationsByLocationName);
-
 
 // users_controller.ts
 app.post("/users", createNewUser);
@@ -145,7 +145,7 @@ app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
 app.post("/dislikes", addDislikes);
 
 // translate
-app.post("/translate", async (req, res) => {
+app.post("/translate", async (req: any, res: any) => {
   const text = req.body.text;
   const detected = await detectLanguage(text);
   console.log(detected);
@@ -162,7 +162,6 @@ app.get("/bookmarks/:uid", getAllBookmarksFromUserByID);
 app.post("/comments", createComment);
 app.delete("/comments/:commentId", deleteExistingComment);
 app.get("/comments/:itineraryId", getCommentsFromItinerary);
-
 
 // followers_controller.ts
 // followers
