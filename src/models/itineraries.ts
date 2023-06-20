@@ -7,7 +7,7 @@ interface LocationData {
   loc_name: string;
   loc_descr_en: string;
   loc_tags: string[];
-  loc_image_url: string;
+  loc_image_url: any;
 }
 
 //GET
@@ -98,7 +98,7 @@ export async function fetchItinerariesByFirebaseID(firebase_id: string) {
     },
   });
   return itinerariesByUser;
-};
+}
 
 // //Return itinerary by Itinerary ID
 // export async function fetchItineraryByID(id: number) {
