@@ -2,11 +2,10 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
-import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
-// import { PrismaClient } from "../node_modules/.prisma/client";
-import { PrismaClient } from "@prisma/client";
-// const translateText = require("./utils/translateFunc.js");
-// const detectLanguage = require("./utils/detectLangFunc.js");
+import { PrismaClient } from "../node_modules/.prisma/client";
+const translateText = require("./utils/translateFunc.js");
+const detectLanguage = require("./utils/detectLangFunc.js");
+
 
 import {
   searchItineraries,
@@ -66,6 +65,11 @@ import {
   getLikesForItinerary,
   getLikesAndDislikesForItinerary,
 } from "./controllers/likes_controller";
+
+import {
+  createNewVisitedMap,
+  getVisitedMap,
+} from "./controllers/visited_map_controller";
 
 dotenv.config();
 
@@ -175,6 +179,10 @@ app.delete("/followers", deleteExistingFollow);
 app.get("/following/:uid", getAllFollowingFromUserByID);
 app.get("/following/number/:username", getFollowingNumberByUsername);
 app.post("/following/check", checkIfUserIsFollowingByID);
+
+// visited_map_controller.ts
+app.get("/visited_map/:firebase_uuid", getVisitedMap);
+app.post("/visited_map", createNewVisitedMap);
 
 // //Listen
 app.listen(PORT, () => {

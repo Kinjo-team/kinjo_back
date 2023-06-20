@@ -67,10 +67,13 @@ export const getItineraryByName = async (req: Request, res: Response) => {
   }
 };
 
-export const getItinerariesByFirebaseID = async (req: Request, res: Response) => {
+export const getItinerariesByFirebaseID = async (
+  req: Request,
+  res: Response
+) => {
   const { id } = req.params;
   try {
-    const itineraries : any = await fetchItinerariesByFirebaseID(id);
+    const itineraries: any = await fetchItinerariesByFirebaseID(id);
     if (itineraries) {
       res.status(200).json(itineraries);
     } else {
@@ -117,8 +120,6 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const addItinerary = async (req: Request, res: Response) => {
   try {
     await createItinerary(req.body);
@@ -141,4 +142,3 @@ export const getNearbyItineraries = async (req: Request, res: Response) => {
       .json({ error: "An error occurred while fetching itineraries." });
   }
 };
-
