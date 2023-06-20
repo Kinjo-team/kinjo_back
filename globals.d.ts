@@ -28,3 +28,11 @@ declare global {
     }
   }
 }
+
+export interface VisitedMap {
+  firebase_uuid: string;
+  visited_coords: [number, number];
+  visited_name: string;
+  visited_descr: string;
+}
+

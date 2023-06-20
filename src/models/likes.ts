@@ -1,7 +1,7 @@
 import { prisma } from "../server";
 
 // Helper function to check if a user has already liked an itinerary
-async function checkLikeDislike(firebase_uuid: any, itinerary_id: any) {
+export async function checkLikeDislike(firebase_uuid: any, itinerary_id: any) {
   const existingRecord = await prisma.likes.findUnique({
     where: {
       firebase_uuid_itinerary_id: {
@@ -86,4 +86,26 @@ export async function getTotalLikesAndDislikesForItinerary(itineraryId: any) {
 
   return  totalDislikes;
 }
+
+// Update the existing like record
+export async function updateLikeDislike(firebase_uuid: string, itinerary_id: number, like: number, dislike: number) {
+  const existingRecord = await checkLikeDislike(firebase_uuid, itinerary_id);
+
+  if (!existingRecord) {
+    throw new Error('User has not liked or disliked this itinerary');
+  }
+
+  const updatedLikeRecord = await prisma.likes.update({
+    where: {
+      id: existingRecord.id,
+    },
+    data: {
+      like: like,
+      dislike: dislike,
+    },
+  });
+
+  return updatedLikeRecord;
+}
+
 

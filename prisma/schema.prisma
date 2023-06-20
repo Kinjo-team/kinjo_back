@@ -19,9 +19,10 @@ model users {
   itineraries   itineraries[]
   likes         likes[]
   bookmarks     bookmarks[]
+  comments      comments[]
   following     followers[] @relation("Following")
   followers     followers[] @relation("Followers")
-  comments      comments[]
+  markers       visited_map[]
 }
 
 model itineraries {
@@ -81,6 +82,16 @@ model bookmarks {
   @@unique([firebase_uuid, itinerary_id])
 }
 
+model comments {
+  id            Int         @id @default(autoincrement())
+  firebase_uuid String
+  itinerary_id  Int
+  comment       String
+  createdAt     DateTime    @default(now())
+  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+}
+
 model followers {
   id              Int      @id @default(autoincrement())
   follower        users    @relation("Following", fields: [follower_id], references: [firebase_uuid])
@@ -91,12 +102,12 @@ model followers {
   @@unique([follower_id, following_id])
 }
 
-model comments {
-  id            Int         @id @default(autoincrement())
-  firebase_uuid String
-  itinerary_id  Int
-  comment       String
-  createdAt     DateTime    @default(now())
-  user          users       @relation(fields: [firebase_uuid], references: [firebase_uuid])
-  itinerary     itineraries @relation(fields: [itinerary_id], references: [itinerary_id])
+
+model visited_map {
+  id             Int       @id @default(autoincrement())
+  visited_coords Float[]
+  visited_name   String
+  visited_descr  String
+  user           users     @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  firebase_uuid  String
 }
