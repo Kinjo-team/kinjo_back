@@ -169,6 +169,7 @@ app.post("/comments", createComment);
 app.delete("/comments/:commentId", deleteExistingComment);
 app.get("/comments/:itineraryId", getCommentsFromItinerary);
 
+
 // followers_controller.ts
 // followers
 app.get("/followers/:uid", getAllFollowersFromUserByID);

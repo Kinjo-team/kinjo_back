@@ -7,6 +7,7 @@ interface LocationData {
   loc_name: string;
   loc_descr_en: string;
   loc_tags: string[];
+  loc_image_url: any;
 }
 
 //GET
@@ -160,6 +161,7 @@ export async function createItinerary(data: ItineraryData) {
           loc_coords: location.loc_coords,
           loc_descr_en: location.loc_descr_en,
           loc_tags: [...location.loc_tags],
+          loc_image_url: location.loc_image_url,
         },
       });
 

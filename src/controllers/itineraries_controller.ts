@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import {v2 as cloudinary} from "cloudinary";
 
 import {
   fetchItinerariesBySearchOption,
@@ -122,7 +123,16 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
 
 export const addItinerary = async (req: Request, res: Response) => {
   try {
+    if (req.files && req.files.loc_image_file) {
+      const file = req.files.loc_image_file;
+
+      const result = await cloudinary.uploader.upload(file.path);
+
+      req.body.loc_image_url = result.secure_url;
+    }
+
     await createItinerary(req.body);
+    console.log("request body from controller:", req.body);
     res.json({ message: "Data inserted successfully" });
   } catch (error) {
     console.error(error);

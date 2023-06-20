@@ -21,9 +21,18 @@ interface ItineraryData {
   locationData: any;
 }
 
+declare global {
+  namespace Express {
+    interface Request {
+      files: any;
+    }
+  }
+}
+
 export interface VisitedMap {
   firebase_uuid: string;
   visited_coords: [number, number];
   visited_name: string;
   visited_descr: string;
 }
+
