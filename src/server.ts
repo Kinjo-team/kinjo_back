@@ -6,6 +6,7 @@ import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
 
+
 import {
   searchItineraries,
   getAllItineraries,
@@ -88,16 +89,17 @@ app.use(express.json());
 app.use(cors());
 
 //Routes
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "../public/", "index.html"));
-});
+// app.get("/", (req: Request, res: Response) => {
+//   res.sendFile(path.join(__dirname, "../public/", "index.html"));
+// });
+app.use(express.static("public"));
 
 // itineraries_controller.ts
 app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
-app.get("/itineraries/id/:id", async (req, res) => {
+app.get("/itineraries/id/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
@@ -149,13 +151,13 @@ app.get("/dislikes/:id", getLikesAndDislikesForItinerary);
 app.post("/dislikes", addDislikes);
 
 // translate
-app.post("/translate", async (req, res) => {
-  const text = req.body.text;
-  const detected = await detectLanguage(text);
-  console.log(detected);
-  const translated = await translateText(text);
-  res.send(translated);
-});
+// app.post("/translate", async (req: Request, res: Response) => {
+//   const text = req.body.text;
+//   const detected = await detectLanguage(text);
+//   console.log(detected);
+//   const translated = await translateText(text);
+//   res.send(translated);
+// });
 
 //bookmarks_controller.ts
 app.post("/bookmarks", createNewBookmark);
