@@ -135,6 +135,7 @@ export async function createItinerary(data: ItineraryData) {
     itinerary_tags,
     kinjo_coords,
     locationData,
+    itinerary_image_url,
   } = data;
 
   console.log("Provided firebase_uuid:", firebase_uuid);
@@ -147,6 +148,7 @@ export async function createItinerary(data: ItineraryData) {
       itinerary_descr,
       itinerary_tags,
       kinjo_coords,
+      itinerary_image_url
     },
   });
 

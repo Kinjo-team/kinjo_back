@@ -19,6 +19,7 @@ interface ItineraryData {
   itinerary_tags: string;
   kinjo_coords: [number, number];
   locationData: any;
+  itinerary_image_url: string;
 }
 
 declare global {
