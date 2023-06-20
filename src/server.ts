@@ -2,7 +2,6 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
-import { getDistanceFromLatLonInKm } from "./utils/getDistanceFromLatLonInKm";
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
@@ -15,7 +14,7 @@ import {
   getItinerariesWithTags,
   addItinerary,
   getNearbyItineraries,
-  getItinerariesByUsername
+  getItinerariesByUsername,
 } from "./controllers/itineraries_controller";
 
 import {
@@ -46,7 +45,7 @@ import {
   deleteExistingUser,
   getUserByUUID,
   getUserByName,
-  patchUsernameByName
+  patchUsernameByName,
 } from "./controllers/users_controller";
 
 import {
@@ -56,14 +55,20 @@ import {
   getFollowingNumberByUsername,
   createNewFollower,
   deleteExistingFollow,
-  checkIfUserIsFollowingByID
+  checkIfUserIsFollowingByID,
 } from "./controllers/followers_controller";
 
-import { addLikes,
-         addDislikes,
-        getLikesForItinerary, 
-        getLikesAndDislikesForItinerary
+import {
+  addLikes,
+  addDislikes,
+  getLikesForItinerary,
+  getLikesAndDislikesForItinerary,
 } from "./controllers/likes_controller";
+
+import {
+  createNewVisitedMap,
+  getVisitedMap,
+} from "./controllers/visited_map_controller";
 
 dotenv.config();
 
@@ -119,14 +124,13 @@ app.get("/itineraries/id/:id", async (req, res) => {
   }
 });
 app.get("/itineraries/tags", getItinerariesWithTags);
-app.get("/itineraries/:username", getItinerariesByUsername)
+app.get("/itineraries/:username", getItinerariesByUsername);
 app.post("/itineraries", addItinerary);
 app.post("/itineraries/nearby", getNearbyItineraries);
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
 app.get("/locations/name/:name", validateName, getLocationsByLocationName);
-
 
 // users_controller.ts
 app.post("/users", createNewUser);
@@ -163,7 +167,6 @@ app.post("/comments", createComment);
 app.delete("/comments/:commentId", deleteExistingComment);
 app.get("/comments/:itineraryId", getCommentsFromItinerary);
 
-
 // followers_controller.ts
 // followers
 app.get("/followers/:uid", getAllFollowersFromUserByID);
@@ -174,6 +177,10 @@ app.delete("/followers", deleteExistingFollow);
 app.get("/following/:uid", getAllFollowingFromUserByID);
 app.get("/following/number/:username", getFollowingNumberByUsername);
 app.post("/following/check", checkIfUserIsFollowingByID);
+
+// visited_map_controller.ts
+app.get("/visited_map/:firebase_uuid", getVisitedMap);
+app.post("/visited_map", createNewVisitedMap);
 
 // //Listen
 app.listen(PORT, () => {

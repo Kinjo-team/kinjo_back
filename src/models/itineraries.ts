@@ -97,7 +97,7 @@ export async function fetchItinerariesByFirebaseID(firebase_id: string) {
     },
   });
   return itinerariesByUser;
-};
+}
 
 // Return itineraries from a specific user by username
 export async function fetchItinerariesByUsername(username: string) {
@@ -109,7 +109,7 @@ export async function fetchItinerariesByUsername(username: string) {
     },
   });
   return itinerariesByUser;
-};
+}
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -229,5 +229,3 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
 
 //     return deleteItinerary.itinerary_id;
 // }
-
-

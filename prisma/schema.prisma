@@ -22,6 +22,7 @@ model users {
   comments      comments[]
   following     followers[] @relation("Following")
   followers     followers[] @relation("Followers")
+  markers       visited_map[]
 }
 
 model itineraries {
@@ -97,4 +98,13 @@ model followers {
   following_id    String
 
   @@unique([follower_id, following_id])
+}
+
+model visited_map {
+  id             Int       @id @default(autoincrement())
+  visited_coords Float[]
+  visited_name   String
+  visited_descr  String
+  user           users     @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  firebase_uuid  String
 }
