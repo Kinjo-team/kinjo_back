@@ -20,3 +20,11 @@ interface ItineraryData {
   kinjo_coords: [number, number];
   locationData: any;
 }
+
+declare global {
+  namespace Express {
+    interface Request {
+      files: any;
+    }
+  }
+}

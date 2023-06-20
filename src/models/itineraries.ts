@@ -7,6 +7,7 @@ interface LocationData {
   loc_name: string;
   loc_descr_en: string;
   loc_tags: string[];
+  loc_image_url: string;
 }
 
 //GET
@@ -136,78 +137,6 @@ export async function fetchItinerariesWithTags(tags: string[]) {
   }
 }
 
-// //Return itineraries with duration greater than
-// export async function fetchItinerariesWithDurationGreaterThan (duration: number) {
-
-//     const itinerariesWhereDuration = await prisma.itineraries.findMany({
-//         where: {
-//             itinerary_duration: {
-//                 gte: duration
-//             }
-//         }
-//     });
-
-//     return itinerariesWhereDuration;
-// }
-
-// //Return itineraries with duration less than
-// export async function fetchItinerariesWithDurationLessThan (duration: number) {
-
-//     const itinerariesWhereDuration = await prisma.itineraries.findMany({
-//         where: {
-//             itinerary_duration: {
-//                 lte: duration
-//             }
-//         }
-//     });
-
-//     return itinerariesWhereDuration;
-// }
-
-// //Return itinerary locations by Itinerary Name
-// export async function fetchLocationsByItineraryName (itineraryName: string) {
-
-//     const itineraryLocationsByName = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_name: itineraryName
-//         }
-//     });
-
-//     return itineraryLocationsByName?.location_ids;
-// }
-
-// //Return itinerary locations by Itinerary ID
-// export async function fetchLocationsByItineraryId (itineraryID: number) {
-
-//     const itineraryLocationsByItineraryID = await prisma.itineraries.findFirst({
-//         where: {
-//             itinerary_id: itineraryID
-//         }
-//     });
-
-//     return itineraryLocationsByItineraryID?.location_ids;
-// }
-
-// POST
-// Add new itinerary
-// export async function createItinerary(itinerary: Itineraries) {
-
-//     const { creator_id, itinerary_name, itinerary_tags, location_ids, itinerary_duration } = itinerary;
-
-//     const newItinerary = await prisma.itineraries.create ({
-//         data: {
-//             creator_id: creator_id,
-//             itinerary_name: itinerary_name,
-//             itinerary_tags: itinerary_tags,
-//             location_ids: location_ids,
-//             itinerary_duration: itinerary_duration
-
-//         }
-//     })
-
-//   return newItinerary.itinerary_name;
-//   }
-
 export async function createItinerary(data: ItineraryData) {
   const {
     firebase_uuid,
@@ -242,6 +171,7 @@ export async function createItinerary(data: ItineraryData) {
           loc_coords: location.loc_coords,
           loc_descr_en: location.loc_descr_en,
           loc_tags: [...location.loc_tags],
+          loc_image_url: location.loc_image_url,
         },
       });
 

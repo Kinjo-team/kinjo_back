@@ -36,6 +36,7 @@ model itineraries {
   likes           likes[]
   bookmarks       bookmarks[]
   comments        comments[]
+  itinerary_image_url String?
 }
 
 model locations {
@@ -44,6 +45,7 @@ model locations {
   loc_coords      Float[]
   loc_descr_en    String
   loc_tags     String[]
+  loc_image_url  String?
   itinerary_locations itinerary_location[]
 }
 
