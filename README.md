@@ -12,8 +12,6 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -36,7 +34,6 @@
     <a href="https://github.com/Kinjo-team/kinjo_back/issues">Request Feature</a>
   </p>
 </div>
-
 
 
 <!-- TABLE OF CONTENTS -->
@@ -66,7 +63,6 @@
 </details>
 
 
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -77,12 +73,10 @@
 KINJO is a Tokyo-based project rooted in the belief that the quiet sidestreets, little towns and urban parks that you don't see in the big city guidebooks have their own story to tell. Taking its name from the Japanese word for neighborhood, KINJO lets you create maps and itineraries of your Tokyo neighborhood and share them with others.
 
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-### Built With
+## Built With
 
 * ![Typescript]
 * ![Node.js][NodeJS]
@@ -92,12 +86,11 @@ KINJO is a Tokyo-based project rooted in the belief that the quiet sidestreets, 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
 A quick-start guide is provided below.
-Make sure you have the KINJO Front End: <a> https://github.com/Kinjo-team/kinjo_back/ </a>
+Make sure you have the KINJO Frontend: <a> https://github.com/Kinjo-team/kinjo_front/ </a>
 
 ### Prerequisites
 
@@ -123,10 +116,7 @@ Make sure you have the KINJO Front End: <a> https://github.com/Kinjo-team/kinjo_
    npm start
    ```
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- USAGE EXAMPLES -->
 <!--## Usage
@@ -153,7 +143,6 @@ See the [open issues](https://github.com/Kinjo-team/kinjo_back/issues) for a ful
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -171,7 +160,6 @@ Don't forget to give the project a star! Thanks again!
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- LICENSE -->
 ## License
 
@@ -181,17 +169,14 @@ Distributed under the MIT License.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- CONTACT -->
 ## Contact
 
-Alex Fisher - [@cuspofcreation](https://github.com/cuspofcreation)
+Terrance Chu - [@RatedYK](https://github.com/RatedYK)
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
-
+KINJO App: [KINJO Frontend](https://github.com/Kinjo-team/kinjo_front/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ACKNOWLEDGMENTS -->
@@ -199,9 +184,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 * [Best README Template](https://github.com/othneildrew/Best-README-Template#readme)
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
