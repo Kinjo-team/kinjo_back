@@ -184,6 +184,7 @@ export async function createItinerary(data: ItineraryData) {
   });
 
   console.log("Inserted itinerary_location records.");
+  return createdItinerary.itinerary_id;
 }
 
 //Nearby locations

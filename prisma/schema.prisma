@@ -16,6 +16,7 @@ model users {
   firebase_uuid String   @unique
   username      String   @unique
   user_email    String   @unique
+  user_img      String   @default("https://res.cloudinary.com/dy6bhh9th/image/upload/v1687315995/yvmorweuimasnznbjnj3.png")
   itineraries   itineraries[]
   likes         likes[]
   bookmarks     bookmarks[]
@@ -28,7 +29,7 @@ model users {
 model itineraries {
   itinerary_id    Int               @id @default(autoincrement())
   firebase_uuid   String
-  itinerary_name  String           @unique
+  itinerary_name  String           
   itinerary_descr String
   itinerary_tags  String[]
   kinjo_coords    Float[]
