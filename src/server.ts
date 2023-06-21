@@ -3,8 +3,8 @@ import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
-const translateText = require("./utils/translateFunc.js");
-const detectLanguage = require("./utils/detectLangFunc.js");
+// const translateText = require("./utils/translateFunc.js");
+// const detectLanguage = require("./utils/detectLangFunc.js");
 
 
 import {
