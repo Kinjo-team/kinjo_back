@@ -47,6 +47,7 @@ import {
   getUserByUUID,
   getUserByName,
   patchUsernameByName,
+  updateUserImage,
 } from "./controllers/users_controller";
 
 import {
@@ -139,7 +140,8 @@ app.post("/users", createNewUser);
 app.get("/users/username/:username", getUserByName);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
-app.patch("/users/:newUsername", patchUsernameByName);
+app.patch("/users/image", updateUserImage);
+app.patch("/users/name/:newUsername", patchUsernameByName);
 
 //likes_controller.ts
 // likes

@@ -131,9 +131,9 @@ export const addItinerary = async (req: Request, res: Response) => {
       req.body.loc_image_url = result.secure_url;
     }
 
-    await createItinerary(req.body);
+    const id = await createItinerary(req.body);
     console.log("request body from controller:", req.body);
-    res.json({ message: "Data inserted successfully" });
+    res.json({ message: "Data inserted successfully", id: id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
