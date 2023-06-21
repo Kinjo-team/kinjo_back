@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { ItineraryData, LocationData } from "../../globals"
 
 import {
   fetchItinerariesBySearchOption,
@@ -13,9 +12,7 @@ import {
   fetchItineraryByItineraryID
 } from "../models/itineraries";
 
-import { PrismaClient, itineraries } from "@prisma/client";
-
-// const prisma = new PrismaClient();
+import { itineraries } from "@prisma/client";
 import { validationResult } from "express-validator";
 
 export const searchItineraries = async (req: Request, res: Response) => {
@@ -68,10 +65,7 @@ export const getItineraryByName = async (req: Request, res: Response) => {
   }
 };
 
-export const getItinerariesByFirebaseID = async (
-  req: Request,
-  res: Response
-) => {
+export const getItinerariesByFirebaseID = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const itineraries: itineraries[] = await fetchItinerariesByFirebaseID(id);
@@ -88,7 +82,6 @@ export const getItinerariesByFirebaseID = async (
 };
 
 export const getItineraryByItineraryID = async (req: Request, res: Response) => {
-  
   const { itineraryId } = req.params;
   try {
     const itineraries: itineraries | null = await fetchItineraryByItineraryID(Number(itineraryId));

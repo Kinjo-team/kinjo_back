@@ -1,8 +1,7 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 import { getDistanceFromLatLonInKm } from "../utils/getDistanceFromLatLonInKm";
-// import { Loca } from "../../globals";
-import { itinerary_location, locations } from "@prisma/client";
+import { locations } from "@prisma/client";
 
 //GET
 // Return itineraries by search option
@@ -121,26 +120,18 @@ export async function fetchItinerariesWithTags(tags: string[]) {
   }
 };
 
-export async function createItinerary(data: ItineraryData) {
-  const {
-    firebase_uuid,
-    itinerary_name,
-    itinerary_descr,
-    itinerary_tags,
-    kinjo_coords,
-    itinerary_locations,
-  } = data;
+export async function createItinerary(itineraryData: ItineraryData) {
 
-  console.log("Provided firebase_uuid:", firebase_uuid);
+  console.log("Provided firebase_uuid:", itineraryData.firebase_uuid);
 
   // Insert itinerary into the "itineraries" table
   const createdItinerary = await prisma.itineraries.create({
     data: {
-      firebase_uuid,
-      itinerary_name,
-      itinerary_descr,
-      itinerary_tags,
-      kinjo_coords,
+      firebase_uuid: itineraryData.firebase_uuid,
+      itinerary_name: itineraryData.itinerary_name,
+      itinerary_descr: itineraryData.itinerary_descr,
+      itinerary_tags: itineraryData.itinerary_tags,
+      kinjo_coords: itineraryData.kinjo_coords,
     },
   });
 
@@ -148,7 +139,7 @@ export async function createItinerary(data: ItineraryData) {
 
   // Insert locations into the "locations" table
   const createdLocations = await Promise.all(
-    itinerary_locations.map(async (location: locations) => {
+    itineraryData.itinerary_locations.map(async (location: locations) => {
       const createdLocation = await prisma.locations.create({
         data: {
           loc_name: location.loc_name,
@@ -178,10 +169,8 @@ export async function createItinerary(data: ItineraryData) {
 };
 
 //Nearby locations
-
 export async function fetchNearbyItineraries(lat: number, lon: number) {
   const itineraries = await prisma.itineraries.findMany();
-
   const nearbyItineraries = itineraries.filter((itinerary) => {
     const [itinLat, itinLon] = itinerary.kinjo_coords;
     const distance = getDistanceFromLatLonInKm(lat, lon, itinLat, itinLon);
@@ -191,9 +180,7 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
   return nearbyItineraries;
 };
 
-
-export async function fetchItineraryByItineraryID(itineraryID: number) {
-  
+export async function fetchItineraryByItineraryID(itineraryID: number) { 
   const itineraryByID = await prisma.itineraries.findUnique({
     where: {
       itinerary_id: itineraryID,
