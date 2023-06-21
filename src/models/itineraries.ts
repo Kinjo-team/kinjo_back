@@ -1,7 +1,8 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 import { getDistanceFromLatLonInKm } from "../utils/getDistanceFromLatLonInKm";
-import { LocationData } from "../../globals";
+// import { Loca } from "../../globals";
+import { itinerary_location, locations } from "@prisma/client";
 
 //GET
 // Return itineraries by search option
@@ -63,12 +64,12 @@ export async function fetchItinerariesBySearchOption(
     });
   }
   return itineraries;
-}
+};
 
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
   return await prisma.itineraries.findMany();
-}
+};
 
 // //Return itinerary by Itinerary Name
 export async function fetchItineraryByName(name: string) {
@@ -79,7 +80,7 @@ export async function fetchItineraryByName(name: string) {
   });
 
   return itineraryByName;
-}
+};
 
 // Return itineraries from a specific user
 export async function fetchItinerariesByFirebaseID(firebase_id: string) {
@@ -91,7 +92,7 @@ export async function fetchItinerariesByFirebaseID(firebase_id: string) {
     },
   });
   return itinerariesByUser;
-}
+};
 
 // Return itineraries from a specific user by username
 export async function fetchItinerariesByUsername(username: string) {
@@ -103,7 +104,7 @@ export async function fetchItinerariesByUsername(username: string) {
     },
   });
   return itinerariesByUser;
-}
+};
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -118,7 +119,7 @@ export async function fetchItinerariesWithTags(tags: string[]) {
 
     return itinerariesWithTag;
   }
-}
+};
 
 export async function createItinerary(data: ItineraryData) {
   const {
@@ -147,7 +148,7 @@ export async function createItinerary(data: ItineraryData) {
 
   // Insert locations into the "locations" table
   const createdLocations = await Promise.all(
-    locationData.map(async (location: LocationData) => {
+    itinerary_locations.map(async (location: locations) => {
       const createdLocation = await prisma.locations.create({
         data: {
           loc_name: location.loc_name,
@@ -174,7 +175,7 @@ export async function createItinerary(data: ItineraryData) {
   });
 
   console.log("Inserted itinerary_location records.");
-}
+};
 
 //Nearby locations
 
@@ -188,7 +189,26 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
   });
 
   return nearbyItineraries;
-}
+};
+
+
+export async function fetchItineraryByItineraryID(itineraryID: number) {
+  
+  const itineraryByID = await prisma.itineraries.findUnique({
+    where: {
+      itinerary_id: itineraryID,
+    },
+    include: {
+      itinerary_locations: {
+        include: {
+            location: true,
+          },
+        },
+      },
+  })
+
+  return itineraryByID;
+};
 
 //PATCH
 //Modify existing itinerary
@@ -222,4 +242,4 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
 //     });
 
 //     return deleteItinerary.itinerary_id;
-// }
+// 

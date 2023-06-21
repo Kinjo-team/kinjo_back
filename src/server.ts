@@ -6,7 +6,6 @@ import { PrismaClient } from "../node_modules/.prisma/client";
 // const translateText = require("./utils/translateFunc.js");
 // const detectLanguage = require("./utils/detectLangFunc.js");
 
-
 import {
   searchItineraries,
   getAllItineraries,
@@ -16,6 +15,7 @@ import {
   addItinerary,
   getNearbyItineraries,
   getItinerariesByUsername,
+  getItineraryByItineraryID,
 } from "./controllers/itineraries_controller";
 
 import {
@@ -99,32 +99,33 @@ app.get("/search", searchItineraries);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
-app.get("/itineraries/id/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
+app.get("/itineraries/id/:id", getItineraryByItineraryID);
+// app.get("/itineraries/id/:id", async (req: Request, res: Response) => {
+//   const { id } = req.params;
 
-  try {
-    const itinerary = await prisma.itineraries.findUnique({
-      where: {
-        itinerary_id: parseInt(id),
-      },
-      include: {
-        itinerary_locations: {
-          include: {
-            location: true,
-          },
-        },
-      },
-    });
+//   try {
+//     const itinerary = await prisma.itineraries.findUnique({
+//       where: {
+//         itinerary_id: parseInt(id),
+//       },
+//       include: {
+//         itinerary_locations: {
+//           include: {
+//             location: true,
+//           },
+//         },
+//       },
+//     });
 
-    if (!itinerary) {
-      return res.status(404).send("Itinerary not found");
-    }
+//     if (!itinerary) {
+//       return res.status(404).send("Itinerary not found");
+//     }
 
-    return res.json(itinerary);
-  } catch (error) {
-    return res.status(500).json({ error: "Something went wrong" });
-  }
-});
+//     return res.json(itinerary);
+//   } catch (error) {
+//     return res.status(500).json({ error: "Something went wrong" });
+//   }
+// });
 app.get("/itineraries/tags", getItinerariesWithTags);
 app.get("/itineraries/:username", getItinerariesByUsername);
 app.post("/itineraries", addItinerary);

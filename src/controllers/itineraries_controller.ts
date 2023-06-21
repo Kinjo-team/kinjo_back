@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-
 import { ItineraryData, LocationData } from "../../globals"
 
 import {
@@ -11,12 +10,12 @@ import {
   createItinerary,
   fetchNearbyItineraries,
   fetchItinerariesByUsername,
+  fetchItineraryByItineraryID
 } from "../models/itineraries";
 
 import { PrismaClient, itineraries } from "@prisma/client";
 
 // const prisma = new PrismaClient();
-
 import { validationResult } from "express-validator";
 
 export const searchItineraries = async (req: Request, res: Response) => {
@@ -87,6 +86,24 @@ export const getItinerariesByFirebaseID = async (
       .json({ error: "An error occurred while fetching the itineraries." });
   }
 };
+
+export const getItineraryByItineraryID = async (req: Request, res: Response) => {
+  
+  const { itineraryId } = req.params;
+  try {
+    const itineraries: itineraries | null = await fetchItineraryByItineraryID(Number(itineraryId));
+    
+    if (itineraries) {
+      res.status(200).json(itineraries);
+    } else {
+      res.status(404).json({ message: "Itineraries not found." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching the itineraries." });
+  }
+}
 
 export const getItinerariesByUsername = async (req: Request, res: Response) => {
   const { username } = req.params;
