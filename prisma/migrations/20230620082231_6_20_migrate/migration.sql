@@ -28,7 +28,7 @@ CREATE TABLE "locations" (
     "loc_coords" DOUBLE PRECISION[],
     "loc_descr_en" TEXT NOT NULL,
     "loc_tags" TEXT[],
-    "loc_image_urls" TEXT[],
+    "loc_image_url" TEXT,
 
     CONSTRAINT "locations_pkey" PRIMARY KEY ("loc_id")
 );
@@ -65,6 +65,17 @@ CREATE TABLE "bookmarks" (
 );
 
 -- CreateTable
+CREATE TABLE "comments" (
+    "id" SERIAL NOT NULL,
+    "firebase_uuid" TEXT NOT NULL,
+    "itinerary_id" INTEGER NOT NULL,
+    "comment" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "followers" (
     "id" SERIAL NOT NULL,
     "follower_id" TEXT NOT NULL,
@@ -74,14 +85,14 @@ CREATE TABLE "followers" (
 );
 
 -- CreateTable
-CREATE TABLE "comments" (
+CREATE TABLE "visited_map" (
     "id" SERIAL NOT NULL,
+    "visited_coords" DOUBLE PRECISION[],
+    "visited_name" TEXT NOT NULL,
+    "visited_descr" TEXT NOT NULL,
     "firebase_uuid" TEXT NOT NULL,
-    "itinerary_id" INTEGER NOT NULL,
-    "comment" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "visited_map_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -127,13 +138,16 @@ ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_firebase_uuid_fkey" FOREIGN KE
 ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_itinerary_id_fkey" FOREIGN KEY ("itinerary_id") REFERENCES "itineraries"("itinerary_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "comments" ADD CONSTRAINT "comments_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "comments" ADD CONSTRAINT "comments_itinerary_id_fkey" FOREIGN KEY ("itinerary_id") REFERENCES "itineraries"("itinerary_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "followers" ADD CONSTRAINT "followers_follower_id_fkey" FOREIGN KEY ("follower_id") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "followers" ADD CONSTRAINT "followers_following_id_fkey" FOREIGN KEY ("following_id") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comments" ADD CONSTRAINT "comments_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "comments" ADD CONSTRAINT "comments_itinerary_id_fkey" FOREIGN KEY ("itinerary_id") REFERENCES "itineraries"("itinerary_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "visited_map" ADD CONSTRAINT "visited_map_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
