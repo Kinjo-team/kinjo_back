@@ -1,3 +1,5 @@
+import { itinerary_location, locations } from "@prisma/client";
+
 export interface Location {
   id: number;
   position: [number, number];
@@ -18,7 +20,7 @@ interface ItineraryData {
   itinerary_descr: string;
   itinerary_tags: string;
   kinjo_coords: [number, number];
-  locationData: any;
+  itinerary_locations: locations[];
 }
 
 export interface VisitedMap {
@@ -26,4 +28,11 @@ export interface VisitedMap {
   visited_coords: [number, number];
   visited_name: string;
   visited_descr: string;
+}
+
+interface LocationData {
+  loc_coords: [number, number];
+  loc_name: string;
+  loc_descr_en: string;
+  loc_tags: string[];
 }

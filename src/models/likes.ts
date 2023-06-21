@@ -1,7 +1,7 @@
 import { prisma } from "../server";
 
 // Helper function to check if a user has already liked an itinerary
-export async function checkLikeDislike(firebase_uuid: any, itinerary_id: any) {
+export async function checkLikeDislike(firebase_uuid: string, itinerary_id: number) {
   const existingRecord = await prisma.likes.findUnique({
     where: {
       firebase_uuid_itinerary_id: {
@@ -56,7 +56,7 @@ export async function createDislike(firebase_uuid : string, itinerary_id :number
 }
 
 // Calculate the total sum of all likes for a given itinerary
-export async function getTotalLikesForItinerary(itineraryId : any) {
+export async function getTotalLikesForItinerary(itineraryId : number) {
   const itinerary = await prisma.itineraries.findUnique({
     where: { itinerary_id: itineraryId },
     include: { likes: true }, // Include the 'likes' relation
@@ -72,7 +72,7 @@ export async function getTotalLikesForItinerary(itineraryId : any) {
 }
 
 // Calculate the total sum of all dislikes for a given itinerary
-export async function getTotalLikesAndDislikesForItinerary(itineraryId: any) {
+export async function getTotalLikesAndDislikesForItinerary(itineraryId: number) {
   const itinerary = await prisma.itineraries.findUnique({
     where: { itinerary_id: itineraryId },
     include: { likes: true }, // Include the 'likes' relation

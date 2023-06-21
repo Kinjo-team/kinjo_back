@@ -1,13 +1,7 @@
 import { prisma } from "../server";
 import { ItineraryData } from "../../globals";
 import { getDistanceFromLatLonInKm } from "../utils/getDistanceFromLatLonInKm";
-
-interface LocationData {
-  loc_coords: [number, number];
-  loc_name: string;
-  loc_descr_en: string;
-  loc_tags: string[];
-}
+import { LocationData } from "../../globals";
 
 //GET
 // Return itineraries by search option
@@ -133,7 +127,7 @@ export async function createItinerary(data: ItineraryData) {
     itinerary_descr,
     itinerary_tags,
     kinjo_coords,
-    locationData,
+    itinerary_locations,
   } = data;
 
   console.log("Provided firebase_uuid:", firebase_uuid);
