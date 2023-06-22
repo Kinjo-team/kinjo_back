@@ -36,7 +36,7 @@ export async function fetchItinerariesBySearchOption(
       },
     });
   } else if (option === "Tag") {
-    const tags = value.split(" ").map((tag) => tag.trim());
+    const tags = value.split(" ").map((tag) => tag.trim().toLowerCase());
     // const tags =value.split(" ").join(" | ");
 
     const itineraryLocations = await prisma.itinerary_location.findMany({
@@ -96,6 +96,55 @@ export async function fetchItinerariesBySearchOption(
     });
   }
   return itineraries;
+}
+
+// Model
+export async function fetchPredictedSearchTerms(option: string, value: string) {
+  value = value.toLowerCase();
+  
+  let terms: any = [];
+  
+  if (option === "Name") {
+    const itineraries = await prisma.itineraries.findMany({
+      where: {
+        itinerary_name: {
+          startsWith: value,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        itinerary_name: true,
+      },
+    });
+
+    terms = itineraries.map(itinerary => itinerary.itinerary_name);
+  } else if (option === "Tag") {
+    const locations = await prisma.locations.findMany({
+      select: {
+        loc_tags: true,
+      },
+    });
+
+    // Flatten the tags array and filter by the search value
+    terms = locations.flatMap(location => location.loc_tags)
+      .filter(tag => tag.toLowerCase().startsWith(value));
+  } else if (option === "User") {
+    const users = await prisma.users.findMany({
+      where: {
+        username: {
+          startsWith: value,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    terms = users.map(user => user.username);
+  }
+
+  return terms;
 }
 
 

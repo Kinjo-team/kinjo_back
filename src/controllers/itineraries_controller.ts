@@ -3,6 +3,7 @@ import {v2 as cloudinary} from "cloudinary";
 
 import {
   fetchItinerariesBySearchOption,
+  fetchPredictedSearchTerms,
   fetchAllItineraries,
   fetchItineraryByName,
   fetchItinerariesWithTags,
@@ -31,6 +32,22 @@ export const searchItineraries = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: "An error occurred while searching itineraries." });
+  }
+};
+
+export const autocompleteSearch = async (req: Request, res: Response) => {
+  const option = req.query.option as string;
+  const value = req.query.value as string;
+
+  try {
+    const terms = await fetchPredictedSearchTerms(option, value);
+    console.log(terms);
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(terms);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching autocomplete suggestions." });
   }
 };
 

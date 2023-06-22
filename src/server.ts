@@ -9,6 +9,7 @@ const detectLanguage = require("./utils/detectLangFunc.js");
 
 import {
   searchItineraries,
+  autocompleteSearch,
   getAllItineraries,
   getItineraryByName,
   getItinerariesByFirebaseID,
@@ -97,6 +98,7 @@ app.use(express.static("public"));
 
 // itineraries_controller.ts
 app.get("/search", searchItineraries);
+app.get("/autocomplete", autocompleteSearch);
 app.get("/itineraries", getAllItineraries);
 app.get("/itineraries/name/:name", validateName, getItineraryByName);
 app.get("/itineraries/user/:id", getItinerariesByFirebaseID);
