@@ -37,11 +37,37 @@ export async function fetchItinerariesBySearchOption(
     });
   } else if (option === "Tag") {
     const tags = value.split(" ").map((tag) => tag.trim());
+    // const tags =value.split(" ").join(" | ");
+
+    const itineraryLocations = await prisma.itinerary_location.findMany({
+      where: {
+        location: {
+          loc_tags: {
+            hasSome: tags,
+          },
+        },
+      },
+      select: {
+        itinerary_id: true,
+      },
+    });
+
+    const itineraryIds = itineraryLocations.map(il => il.itinerary_id);
+
     itineraries = await prisma.itineraries.findMany({
       where: {
-        itinerary_tags: {
-          hasEvery: tags,
-        },
+        OR: [
+          {
+            itinerary_tags: {
+              hasSome: tags,
+            },
+          },
+          {
+            itinerary_id: {
+              in: itineraryIds,
+            },
+          },
+        ],
       },
       include: {
         user: {
@@ -71,6 +97,7 @@ export async function fetchItinerariesBySearchOption(
   }
   return itineraries;
 }
+
 
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
