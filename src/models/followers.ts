@@ -7,51 +7,66 @@ export async function getFollowers(firebase_uuid : string) {
           firebase_uuid: firebase_uuid,
         },
         include: {
-          followers: {
-            include: {
-              follower: true,
+            followers: {
+              include: {
+                follower: {
+                  select: {
+                    username: true,
+                    user_img: true, // Add the user_img field to be included
+                  },
+                },
+              },
             },
           },
-        },
-      });
-
-      if (!user) {
-        return [];
+        });
+      
+        if (!user) {
+          return [];
+        }
+      
+        // Extract usernames and user images of followers
+        const followersData = user?.followers.map(followerRelation => ({
+          username: followerRelation.follower.username,
+          user_img: followerRelation.follower.user_img,
+        }));
+      
+        return followersData;
       }
-    
-      // Extract usernames of followers
-      const followerUsernames = user?.followers.map(followerRelation => followerRelation.follower.username);
-    
-      return followerUsernames;
-    }
   
 
 
 //Get all following from user
-export async function getFollowing(firebase_uuid : string) {
+export async function getFollowing(firebase_uuid: string) {
     const user = await prisma.users.findUnique({
-        where: {
-          firebase_uuid: firebase_uuid,
-        },
-        include: {
-          following: {
-            include: {
-              following: true,
+      where: {
+        firebase_uuid: firebase_uuid,
+      },
+      include: {
+        following: {
+          include: {
+            following: {
+              select: {
+                username: true,
+                user_img: true, // Add the user_img field to be included
+              },
             },
           },
         },
-      });
-
-      if (!user) {
-        return [];
-      }
-    
-      // Extract usernames of people user is following
-      const followingUsernames = user?.following.map(followingRelation => followingRelation.following.username);
-    
-      return followingUsernames;
+      },
+    });
+  
+    if (!user) {
+      return [];
     }
   
+    // Extract usernames and user images of following users
+    const followingData = user?.following.map(followingRelation => ({
+      username: followingRelation.following.username,
+      user_img: followingRelation.following.user_img,
+    }));
+  
+    return followingData;
+  }
 
 //Check if user is following another user
 export async function checkIfUserIsFollowing(userID: string, followerID: string) {

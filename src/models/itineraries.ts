@@ -31,8 +31,15 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
+        likes: {
+          select: {
+            like: true,
+            dislike: true,
+          }
+        }
       },
     });
   } else if (option === "Tag") {
