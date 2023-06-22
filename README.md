@@ -56,7 +56,7 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#The KINJO Team">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -78,9 +78,10 @@ KINJO is a Tokyo-based project rooted in the belief that the quiet sidestreets, 
 ## Built With
 
 * ![Typescript]
-* ![Node.js][NodeJS]
-* ![Express][Express.js]
-
+* ![NodeJS]
+* ![Express.js]
+* ![Prisma]
+* ![Axios]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -131,8 +132,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Future Development Roadmap
 
-- [ ] Restore MVC structure
-- [ ] Ensure full type-safety
+- [ ] Support for editing itineraries
+- [ ] Group itinerary support
 
 <!--- [ ] Feature 3
     - [ ] Nested Feature-->
@@ -169,9 +170,12 @@ Distributed under the MIT License.
 
 
 <!-- CONTACT -->
-## Contact
+## The Kinjo Team
 
-Terrance Chu - [@RatedYK](https://github.com/RatedYK)
+Terrance Chu - [@RatedYK](https://github.com/RatedYK) <br>
+Evan Peterson - [@evan-desu](https://github.com/evan-desu)<br>
+Garrett Omi - [@garrettomi](https://github.com/garrettomi)<br>
+Alex Fisher - [@cuspofcreation](https://github.com/cuspofcreation)
 
 KINJO App: [KINJO Frontend](https://github.com/Kinjo-team/kinjo_front/)
 
@@ -217,9 +221,11 @@ KINJO App: [KINJO Frontend](https://github.com/Kinjo-team/kinjo_front/)
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
-[Typescript]: https://shields.io/badge/TypeScript-3178C6?logo=TypeScript&logoColor=FFF&style=flat-square
+[Typescript]: https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff&style=for-the-badge
 [Typescript-url]: https://www.typescriptlang.org/
 [Postgres]: https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white
 [Express.js]: https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB
 [NodeJS]: https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white
 [Nodemon]: https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD
+[Axios]: https://img.shields.io/badge/Axios-5A29E4?logo=axios&logoColor=fff&style=for-the-badge
+[Prisma]: https://img.shields.io/badge/Prisma-2D3748?logo=prisma&logoColor=fff&style=for-the-badge
