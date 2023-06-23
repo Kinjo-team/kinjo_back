@@ -80,6 +80,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },
@@ -97,6 +98,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },

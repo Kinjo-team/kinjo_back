@@ -1,10 +1,10 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import path from "path";
-import cors from "cors";
 import { PrismaClient } from "../node_modules/.prisma/client";
 const translateText = require("./utils/translateFunc.js");
 const detectLanguage = require("./utils/detectLangFunc.js");
+const cors = require('cors');
+const allowedOrigins: string[] = ["https://www.kinjo-japan.com", "https://kinjo.onrender.com", "https://kinjo-dev.onrender.com", "http://localhost:3000"];
 
 
 import {
@@ -87,13 +87,18 @@ export const prisma = new PrismaClient();
 
 //Middleware
 app.use(express.json());
-// app.use(cors(corsOptions));
-app.use(cors());
+app.use(cors({
+  origin: (origin : string, callback : Function) => {
+    // Check if the origin is in the allowed origins array or if it's undefined (for cases like Postman)
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
 
 //Routes
-// app.get("/", (req: Request, res: Response) => {
-//   res.sendFile(path.join(__dirname, "../public/", "index.html"));
-// });
 app.use(express.static("public"));
 
 // itineraries_controller.ts
