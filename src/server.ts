@@ -79,10 +79,6 @@ dotenv.config();
 const app: Express = express();
 const PORT = process.env.PORT || 8000;
 
-// const corsOptions = {
-//     origin: "http://localhost:3000"
-// }
-
 export const prisma = new PrismaClient();
 
 //Middleware
