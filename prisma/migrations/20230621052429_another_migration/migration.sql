@@ -4,6 +4,7 @@ CREATE TABLE "users" (
     "firebase_uuid" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "user_email" TEXT NOT NULL,
+    "user_img" TEXT NOT NULL DEFAULT 'https://res.cloudinary.com/dy6bhh9th/image/upload/v1687315995/yvmorweuimasnznbjnj3.png',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
@@ -103,9 +104,6 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_user_email_key" ON "users"("user_email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "itineraries_itinerary_name_key" ON "itineraries"("itinerary_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_firebase_uuid_itinerary_id_key" ON "likes"("firebase_uuid", "itinerary_id");
