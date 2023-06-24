@@ -26,7 +26,6 @@ export const searchItineraries = async (req: Request, res: Response) => {
 
   try {
     const itineraries = await fetchItinerariesBySearchOption(option, value);
-    console.log(itineraries);
     res.setHeader("Content-Type", "application/json");
     res.status(200).json(itineraries);
   } catch (error) {

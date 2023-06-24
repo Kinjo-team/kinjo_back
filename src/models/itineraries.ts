@@ -91,6 +91,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           username: {
             contains: value,
+            mode: "insensitive",
           },
         },
       },
