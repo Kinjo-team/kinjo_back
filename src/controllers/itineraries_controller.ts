@@ -183,6 +183,7 @@ export const deleteItinerary = async (req: Request, res: Response) => {
       res.status(404).json({ message: "Itinerary not found." });
     }
   } catch (error) {
+    console.log(error)
     res
       .status(500)
       .json({ error: "An error occurred while deleting the itinerary." });
