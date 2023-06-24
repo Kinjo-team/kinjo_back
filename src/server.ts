@@ -17,6 +17,7 @@ import {
   addItinerary,
   getNearbyItineraries,
   getItinerariesByUsername,
+  deleteItinerary,
 } from "./controllers/itineraries_controller";
 
 import {
@@ -133,6 +134,7 @@ app.get("/itineraries/tags", getItinerariesWithTags);
 app.get("/itineraries/:username", getItinerariesByUsername);
 app.post("/itineraries", addItinerary);
 app.post("/itineraries/nearby", getNearbyItineraries);
+app.delete("/itineraries/:id", deleteItinerary);
 
 // locations_controller.ts
 app.get("/locations", getAllLocations);
