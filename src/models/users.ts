@@ -24,11 +24,28 @@ export async function getUserByFirebaseUUID(uid: string) {
   return user;
 }
 
+export async function getUserByFirebaseUUIDNoEmail(uid: string) {
+  const user = await prisma.users.findUnique({
+    where: {
+      firebase_uuid: uid,
+    },
+    select: {
+      username: true,
+      user_img: true,
+    },
+  });
+  return user;
+}
+
 // Get user by username
 export async function getUserByUsername(username: string) {
   const user = await prisma.users.findUnique({
     where: {
       username: username,
+    },
+    select: {
+      username: true,
+      user_img: true,
     },
   });
   return user;

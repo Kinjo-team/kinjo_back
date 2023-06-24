@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addNewUser, deleteUser, getUserByUsername, getUserByFirebaseUUID, changeUsername, changeUserImage } from "../models/users";
+import { addNewUser, deleteUser, getUserByUsername, getUserByFirebaseUUID, getUserByFirebaseUUIDNoEmail, changeUsername, changeUserImage } from "../models/users";
 
 export const createNewUser = async (req: Request, res: Response) => {
   console.log(req.body);
@@ -31,6 +31,17 @@ export const getUserByUUID = async (req: Request, res: Response) => {
 
   try {
     const user = await getUserByFirebaseUUID(uid);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Unable to find user in database" });
+  }
+};
+
+export const getUserByUUIDNoEmail = async (req: Request, res: Response) => {
+  const uid = String(req.params.uid);
+
+  try {
+    const user = await getUserByFirebaseUUIDNoEmail(uid);
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: "Unable to find user in database" });

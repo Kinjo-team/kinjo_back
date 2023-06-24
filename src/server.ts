@@ -50,6 +50,7 @@ import {
   getUserByName,
   patchUsernameByName,
   updateUserImage,
+  getUserByUUIDNoEmail,
 } from "./controllers/users_controller";
 
 import {
@@ -145,6 +146,7 @@ app.post("/users", createNewUser);
 app.get("/users/username/:username", getUserByName);
 app.delete("/users/:uid", deleteExistingUser);
 app.get("/users/:uid", getUserByUUID);
+app.get("/users/noemail/:uid", getUserByUUIDNoEmail);
 app.patch("/users/image", updateUserImage);
 app.patch("/users/name/:newUsername", patchUsernameByName);
 
