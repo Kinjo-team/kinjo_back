@@ -34,7 +34,12 @@ export async function getComments(itineraryId: number) {
             itinerary_id: itineraryId,
         },
         include: { 
-            user: true,
+            user: {
+                select: {
+                    username: true,
+                    user_img: true,
+                },
+            },
         },
     });
     return comments;
