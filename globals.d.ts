@@ -19,4 +19,21 @@ interface ItineraryData {
   itinerary_tags: string;
   kinjo_coords: [number, number];
   locationData: any;
+  itinerary_image_url: string;
 }
+
+declare global {
+  namespace Express {
+    interface Request {
+      files: any;
+    }
+  }
+}
+
+export interface VisitedMap {
+  firebase_uuid: string;
+  visited_coords: [number, number];
+  visited_name: string;
+  visited_descr: string;
+}
+

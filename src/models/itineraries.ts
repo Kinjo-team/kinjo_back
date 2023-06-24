@@ -7,6 +7,7 @@ interface LocationData {
   loc_name: string;
   loc_descr_en: string;
   loc_tags: string[];
+  loc_image_url: any;
 }
 
 //GET
@@ -30,22 +31,56 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
+        likes: {
+          select: {
+            like: true,
+            dislike: true,
+          }
+        }
       },
     });
   } else if (option === "Tag") {
-    const tags = value.split(" ").map((tag) => tag.trim());
+    const tags = value.split(" ").map((tag) => tag.trim().toLowerCase());
+    // const tags =value.split(" ").join(" | ");
+
+    const itineraryLocations = await prisma.itinerary_location.findMany({
+      where: {
+        location: {
+          loc_tags: {
+            hasSome: tags,
+          },
+        },
+      },
+      select: {
+        itinerary_id: true,
+      },
+    });
+
+    const itineraryIds = itineraryLocations.map(il => il.itinerary_id);
+
     itineraries = await prisma.itineraries.findMany({
       where: {
-        itinerary_tags: {
-          hasEvery: tags,
-        },
+        OR: [
+          {
+            itinerary_tags: {
+              hasSome: tags,
+            },
+          },
+          {
+            itinerary_id: {
+              in: itineraryIds,
+            },
+          },
+        ],
       },
       include: {
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },
@@ -63,6 +98,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },
@@ -70,6 +106,56 @@ export async function fetchItinerariesBySearchOption(
   }
   return itineraries;
 }
+
+// Model
+export async function fetchPredictedSearchTerms(option: string, value: string) {
+  value = value.toLowerCase();
+  
+  let terms: any = [];
+  
+  if (option === "Name") {
+    const itineraries = await prisma.itineraries.findMany({
+      where: {
+        itinerary_name: {
+          startsWith: value,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        itinerary_name: true,
+      },
+    });
+
+    terms = itineraries.map(itinerary => itinerary.itinerary_name);
+  } else if (option === "Tag") {
+    const locations = await prisma.locations.findMany({
+      select: {
+        loc_tags: true,
+      },
+    });
+
+    // Flatten the tags array and filter by the search value
+    terms = locations.flatMap(location => location.loc_tags)
+      .filter(tag => tag.toLowerCase().startsWith(value));
+  } else if (option === "User") {
+    const users = await prisma.users.findMany({
+      where: {
+        username: {
+          startsWith: value,
+          mode: "insensitive",
+        },
+      },
+      select: {
+        username: true,
+      },
+    });
+
+    terms = users.map(user => user.username);
+  }
+
+  return terms;
+}
+
 
 //Returns all stored itineraries
 export async function fetchAllItineraries() {
@@ -97,7 +183,7 @@ export async function fetchItinerariesByFirebaseID(firebase_id: string) {
     },
   });
   return itinerariesByUser;
-};
+}
 
 // Return itineraries from a specific user by username
 export async function fetchItinerariesByUsername(username: string) {
@@ -109,7 +195,7 @@ export async function fetchItinerariesByUsername(username: string) {
     },
   });
   return itinerariesByUser;
-};
+}
 
 //Return itineraries by tag
 export async function fetchItinerariesWithTags(tags: string[]) {
@@ -134,6 +220,7 @@ export async function createItinerary(data: ItineraryData) {
     itinerary_tags,
     kinjo_coords,
     locationData,
+    itinerary_image_url,
   } = data;
 
   console.log("Provided firebase_uuid:", firebase_uuid);
@@ -146,6 +233,7 @@ export async function createItinerary(data: ItineraryData) {
       itinerary_descr,
       itinerary_tags,
       kinjo_coords,
+      itinerary_image_url
     },
   });
 
@@ -160,6 +248,7 @@ export async function createItinerary(data: ItineraryData) {
           loc_coords: location.loc_coords,
           loc_descr_en: location.loc_descr_en,
           loc_tags: [...location.loc_tags],
+          loc_image_url: location.loc_image_url,
         },
       });
 
@@ -180,6 +269,7 @@ export async function createItinerary(data: ItineraryData) {
   });
 
   console.log("Inserted itinerary_location records.");
+  return createdItinerary.itinerary_id;
 }
 
 //Nearby locations
@@ -196,38 +286,42 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
   return nearbyItineraries;
 }
 
-//PATCH
-//Modify existing itinerary
-// export async function modifyItinerary(itinerary: itineraries) {
 
-//     const { itinerary_id } = itinerary;
+// DELETE
+// Delete itinerary by id (and all associated locations)
+export async function deleteItineraryById(id: number) {
+  // First delete all associated records in related tables
+  await prisma.itinerary_location.deleteMany({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
-//     const modifiedItinerary = await prisma.itineraries.update({
-//         where: {
-//           itinerary_id: itinerary_id
-//         },
-//         data: {
-//             creator_id: itinerary.creator_id,
-//             itinerary_name: itinerary.itinerary_name,
-//             itinerary_tags: itinerary.itinerary_tags,
-//             location_ids: itinerary.location_ids,
-//             itinerary_duration: itinerary.itinerary_duration,
-//           },
-//     })
+  await prisma.likes.deleteMany({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
-//     return modifiedItinerary;
-// }
+  await prisma.bookmarks.deleteMany({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
-// //Delete itinerary by ID
-// export async function deleteItineraryByItineraryID(itineraryID: number) {
-//     // const { itinerary_id } = itinerary;
-//     const deleteItinerary = await prisma.itineraries.delete({
-//         where: {
-//             itinerary_id: itineraryID,
-//         }
-//     });
+  await prisma.comments.deleteMany({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
-//     return deleteItinerary.itinerary_id;
-// }
+  // Then delete the itinerary
+  const itinerary = await prisma.itineraries.delete({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
+  return itinerary;
+}
 

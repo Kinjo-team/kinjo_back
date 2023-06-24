@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client-js"
   output = "../node_modules/.prisma/client"
+  previewFeatures = "fullTextSearch"
 }
 
 datasource db {
@@ -16,18 +17,20 @@ model users {
   firebase_uuid String   @unique
   username      String   @unique
   user_email    String   @unique
+  user_img      String   @default("https://res.cloudinary.com/dy6bhh9th/image/upload/v1687315995/yvmorweuimasnznbjnj3.png")
   itineraries   itineraries[]
   likes         likes[]
   bookmarks     bookmarks[]
   comments      comments[]
   following     followers[] @relation("Following")
   followers     followers[] @relation("Followers")
+  markers       visited_map[]
 }
 
 model itineraries {
   itinerary_id    Int               @id @default(autoincrement())
   firebase_uuid   String
-  itinerary_name  String           @unique
+  itinerary_name  String           
   itinerary_descr String
   itinerary_tags  String[]
   kinjo_coords    Float[]
@@ -36,6 +39,7 @@ model itineraries {
   likes           likes[]
   bookmarks       bookmarks[]
   comments        comments[]
+  itinerary_image_url String?
 }
 
 model locations {
@@ -44,6 +48,7 @@ model locations {
   loc_coords      Float[]
   loc_descr_en    String
   loc_tags     String[]
+  loc_image_url  String?
   itinerary_locations itinerary_location[]
 }
 
@@ -97,4 +102,14 @@ model followers {
   following_id    String
 
   @@unique([follower_id, following_id])
+}
+
+
+model visited_map {
+  id             Int       @id @default(autoincrement())
+  visited_coords Float[]
+  visited_name   String
+  visited_descr  String
+  user           users     @relation(fields: [firebase_uuid], references: [firebase_uuid])
+  firebase_uuid  String
 }

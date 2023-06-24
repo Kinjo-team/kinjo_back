@@ -47,13 +47,28 @@ export async function changeUsername(uid: string, newUsername: string) {
     throw new Error('Username already exists');
   }
 
-  // Update the username if it doesn't exist already
+
+// Update the username if it doesn't exist already
   const updatedUser = await prisma.users.update({
     where: {
       firebase_uuid: uid,
     },
     data: {
       username: newUsername,
+    },
+  });
+  return updatedUser;
+}
+
+// Update the user profile image
+export async function changeUserImage(uid: string, newImage: string) {
+  console.log(uid, newImage)
+  const updatedUser = await prisma.users.update({
+    where: {
+      firebase_uuid: uid,
+    },
+    data: {
+      user_img: newImage,
     },
   });
   return updatedUser;

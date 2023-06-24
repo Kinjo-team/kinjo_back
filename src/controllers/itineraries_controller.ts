@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
+import {v2 as cloudinary} from "cloudinary";
 
 import {
   fetchItinerariesBySearchOption,
+  fetchPredictedSearchTerms,
   fetchAllItineraries,
   fetchItineraryByName,
   fetchItinerariesWithTags,
@@ -9,6 +11,7 @@ import {
   createItinerary,
   fetchNearbyItineraries,
   fetchItinerariesByUsername,
+  deleteItineraryById,
 } from "../models/itineraries";
 
 import { PrismaClient } from "@prisma/client";
@@ -30,6 +33,22 @@ export const searchItineraries = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: "An error occurred while searching itineraries." });
+  }
+};
+
+export const autocompleteSearch = async (req: Request, res: Response) => {
+  const option = req.query.option as string;
+  const value = req.query.value as string;
+
+  try {
+    const terms = await fetchPredictedSearchTerms(option, value);
+    console.log(terms);
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(terms);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching autocomplete suggestions." });
   }
 };
 
@@ -67,10 +86,13 @@ export const getItineraryByName = async (req: Request, res: Response) => {
   }
 };
 
-export const getItinerariesByFirebaseID = async (req: Request, res: Response) => {
+export const getItinerariesByFirebaseID = async (
+  req: Request,
+  res: Response
+) => {
   const { id } = req.params;
   try {
-    const itineraries : any = await fetchItinerariesByFirebaseID(id);
+    const itineraries: any = await fetchItinerariesByFirebaseID(id);
     if (itineraries) {
       res.status(200).json(itineraries);
     } else {
@@ -117,12 +139,19 @@ export const getItinerariesWithTags = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const addItinerary = async (req: Request, res: Response) => {
   try {
-    await createItinerary(req.body);
-    res.json({ message: "Data inserted successfully" });
+    if (req.files && req.files.loc_image_file) {
+      const file = req.files.loc_image_file;
+
+      const result = await cloudinary.uploader.upload(file.path);
+
+      req.body.loc_image_url = result.secure_url;
+    }
+
+    const id = await createItinerary(req.body);
+    console.log("request body from controller:", req.body);
+    res.json({ message: "Data inserted successfully", id: id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
@@ -142,3 +171,21 @@ export const getNearbyItineraries = async (req: Request, res: Response) => {
   }
 };
 
+
+// DELETE
+export const deleteItinerary = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const itinerary = await deleteItineraryById(Number(id));
+    if (itinerary) {
+      res.status(200).json(itinerary);
+    } else {
+      res.status(404).json({ message: "Itinerary not found." });
+    }
+  } catch (error) {
+    console.log(error)
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the itinerary." });
+  }
+}

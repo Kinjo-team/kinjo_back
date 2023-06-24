@@ -4,6 +4,7 @@ CREATE TABLE "users" (
     "firebase_uuid" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "user_email" TEXT NOT NULL,
+    "user_img" TEXT NOT NULL DEFAULT 'https://res.cloudinary.com/dy6bhh9th/image/upload/v1687315995/yvmorweuimasnznbjnj3.png',
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
@@ -16,6 +17,7 @@ CREATE TABLE "itineraries" (
     "itinerary_descr" TEXT NOT NULL,
     "itinerary_tags" TEXT[],
     "kinjo_coords" DOUBLE PRECISION[],
+    "itinerary_image_url" TEXT,
 
     CONSTRAINT "itineraries_pkey" PRIMARY KEY ("itinerary_id")
 );
@@ -27,6 +29,7 @@ CREATE TABLE "locations" (
     "loc_coords" DOUBLE PRECISION[],
     "loc_descr_en" TEXT NOT NULL,
     "loc_tags" TEXT[],
+    "loc_image_url" TEXT,
 
     CONSTRAINT "locations_pkey" PRIMARY KEY ("loc_id")
 );
@@ -82,6 +85,17 @@ CREATE TABLE "followers" (
     CONSTRAINT "followers_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "visited_map" (
+    "id" SERIAL NOT NULL,
+    "visited_coords" DOUBLE PRECISION[],
+    "visited_name" TEXT NOT NULL,
+    "visited_descr" TEXT NOT NULL,
+    "firebase_uuid" TEXT NOT NULL,
+
+    CONSTRAINT "visited_map_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_firebase_uuid_key" ON "users"("firebase_uuid");
 
@@ -90,9 +104,6 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_user_email_key" ON "users"("user_email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "itineraries_itinerary_name_key" ON "itineraries"("itinerary_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_firebase_uuid_itinerary_id_key" ON "likes"("firebase_uuid", "itinerary_id");
@@ -135,3 +146,6 @@ ALTER TABLE "followers" ADD CONSTRAINT "followers_follower_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "followers" ADD CONSTRAINT "followers_following_id_fkey" FOREIGN KEY ("following_id") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "visited_map" ADD CONSTRAINT "visited_map_firebase_uuid_fkey" FOREIGN KEY ("firebase_uuid") REFERENCES "users"("firebase_uuid") ON DELETE RESTRICT ON UPDATE CASCADE;
