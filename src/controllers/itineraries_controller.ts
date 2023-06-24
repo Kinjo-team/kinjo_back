@@ -11,6 +11,7 @@ import {
   createItinerary,
   fetchNearbyItineraries,
   fetchItinerariesByUsername,
+  deleteItineraryById,
 } from "../models/itineraries";
 
 import { PrismaClient } from "@prisma/client";
@@ -169,3 +170,21 @@ export const getNearbyItineraries = async (req: Request, res: Response) => {
       .json({ error: "An error occurred while fetching itineraries." });
   }
 };
+
+
+// DELETE
+export const deleteItinerary = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const itinerary = await deleteItineraryById(Number(id));
+    if (itinerary) {
+      res.status(200).json(itinerary);
+    } else {
+      res.status(404).json({ message: "Itinerary not found." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the itinerary." });
+  }
+}

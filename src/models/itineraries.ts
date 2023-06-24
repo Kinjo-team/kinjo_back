@@ -80,6 +80,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },
@@ -97,6 +98,7 @@ export async function fetchItinerariesBySearchOption(
         user: {
           select: {
             username: true,
+            user_img: true,
           },
         },
       },
@@ -284,36 +286,15 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
   return nearbyItineraries;
 }
 
-//PATCH
-//Modify existing itinerary
-// export async function modifyItinerary(itinerary: itineraries) {
 
-//     const { itinerary_id } = itinerary;
+// DELETE
+// Delete itinerary by id (and all associated locations)
+export async function deleteItineraryById(id: number) {
+  const itinerary = await prisma.itineraries.delete({
+    where: {
+      itinerary_id: id,
+    },
+  });
 
-//     const modifiedItinerary = await prisma.itineraries.update({
-//         where: {
-//           itinerary_id: itinerary_id
-//         },
-//         data: {
-//             creator_id: itinerary.creator_id,
-//             itinerary_name: itinerary.itinerary_name,
-//             itinerary_tags: itinerary.itinerary_tags,
-//             location_ids: itinerary.location_ids,
-//             itinerary_duration: itinerary.itinerary_duration,
-//           },
-//     })
-
-//     return modifiedItinerary;
-// }
-
-// //Delete itinerary by ID
-// export async function deleteItineraryByItineraryID(itineraryID: number) {
-//     // const { itinerary_id } = itinerary;
-//     const deleteItinerary = await prisma.itineraries.delete({
-//         where: {
-//             itinerary_id: itineraryID,
-//         }
-//     });
-
-//     return deleteItinerary.itinerary_id;
-// }
+  return itinerary;
+}
