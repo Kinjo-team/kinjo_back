@@ -30,6 +30,7 @@ export async function getUserByFirebaseUUIDNoEmail(uid: string) {
       firebase_uuid: uid,
     },
     select: {
+      firebase_uuid: true,
       username: true,
       user_img: true,
     },
