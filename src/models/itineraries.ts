@@ -286,45 +286,6 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
   return nearbyItineraries;
 }
 
-
-// DELETE
-// // Delete itinerary by id (and all associated locations)
-// export async function deleteItineraryById(id: number) {
-//   // First delete all associated records in related tables
-//   await prisma.itinerary_location.deleteMany({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   await prisma.likes.deleteMany({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   await prisma.bookmarks.deleteMany({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   await prisma.comments.deleteMany({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   // Then delete the itinerary
-//   const itinerary = await prisma.itineraries.delete({
-//     where: {
-//       itinerary_id: id,
-//     },
-//   });
-
-//   return itinerary;
-// }
-
 // DELETE
 // Delete itinerary by id (and all associated locations)
 export async function deleteItineraryById(id: number) {

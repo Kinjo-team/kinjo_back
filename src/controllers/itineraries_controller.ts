@@ -171,25 +171,6 @@ export const getNearbyItineraries = async (req: Request, res: Response) => {
   }
 };
 
-
-// // DELETE
-// export const deleteItinerary = async (req: Request, res: Response) => {
-//   const { id } = req.params;
-//   try {
-//     const itinerary = await deleteItineraryById(Number(id));
-//     if (itinerary) {
-//       res.status(200).json(itinerary);
-//     } else {
-//       res.status(404).json({ message: "Itinerary not found." });
-//     }
-//   } catch (error) {
-//     console.log(error)
-//     res
-//       .status(500)
-//       .json({ error: "An error occurred while deleting the itinerary." });
-//   }
-// }
-
 // DELETE
 export const deleteItinerary = async (req: Request, res: Response) => {
   const { id } = req.params;
