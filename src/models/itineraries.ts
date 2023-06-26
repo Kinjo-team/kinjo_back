@@ -288,9 +288,61 @@ export async function fetchNearbyItineraries(lat: number, lon: number) {
 
 
 // DELETE
+// // Delete itinerary by id (and all associated locations)
+// export async function deleteItineraryById(id: number) {
+//   // First delete all associated records in related tables
+//   await prisma.itinerary_location.deleteMany({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   await prisma.likes.deleteMany({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   await prisma.bookmarks.deleteMany({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   await prisma.comments.deleteMany({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   // Then delete the itinerary
+//   const itinerary = await prisma.itineraries.delete({
+//     where: {
+//       itinerary_id: id,
+//     },
+//   });
+
+//   return itinerary;
+// }
+
+// DELETE
 // Delete itinerary by id (and all associated locations)
 export async function deleteItineraryById(id: number) {
-  // First delete all associated records in related tables
+  // Find the itinerary to be deleted
+  const itinerary = await prisma.itineraries.findUnique({
+    where: {
+      itinerary_id: id,
+    },
+    include: {
+      itinerary_locations: true,
+    },
+  });
+
+  if (!itinerary) {
+    throw new Error("Itinerary not found");
+  }
+
+  // Delete all associated records in related tables
   await prisma.itinerary_location.deleteMany({
     where: {
       itinerary_id: id,
@@ -315,13 +367,30 @@ export async function deleteItineraryById(id: number) {
     },
   });
 
-  // Then delete the itinerary
-  const itinerary = await prisma.itineraries.delete({
+  // Delete the itinerary
+  await prisma.itineraries.delete({
     where: {
       itinerary_id: id,
     },
   });
 
-  return itinerary;
-}
+  // Delete associated locations if they are no longer used in other itineraries
+  for (const location of itinerary.itinerary_locations) {
+    const usedInOtherItinerary = await prisma.itinerary_location.findFirst({
+      where: {
+        location_id: location.location_id,
+        NOT: {
+          itinerary_id: id,
+        },
+      },
+    });
 
+    if (!usedInOtherItinerary) {
+      await prisma.locations.delete({
+        where: {
+          loc_id: location.location_id,
+        },
+      });
+    }
+  }
+}
